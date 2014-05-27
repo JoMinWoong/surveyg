@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <%- include head.ejs %>
+    <link rel='stylesheet' href='/stylesheets/list.css' />
+  </head>
+  <body>
+  <!-- { "datatype" : 1, "email" : "new7@e.e", 
+  "user_password" : "ce8ae485d9655f02ad6565111f10af0acbe2f54a", 
+  "screen_name" : "un", "gender" : "1", "age" : "34", "state" : "Iwate-ken", "city" : "iwa", "_id" : ObjectId("52f7304a54faac3802000001") } -->
+  <div class='container'>
+	<%- include header.ejs %>
+		
+		<div class="page-canvas">
+			<div class="signup-wrapper">
+
+				<h1><%= title %></h1>
+
+					<fieldset class="textbox">
+<% if( title == "mypage") { %>
+					<!-- email -->
+						<div class="prompt email">
+							<div class="field-name">Email address</div>
+							<div class="field" data-fieldname="email">
+								<%= _data.user.email %>
+							</div>
+						</div>
+<% } %>
+					<!-- username -->
+						<div class="prompt username">
+							<div class="field-name">username</div>
+							<div class="field" data-fieldname="username">
+								<%= _data.user.screen_name %>
+							</div>
+						</div>
+<% if( title == "mypage") { %>
+					<!-- gender -->
+					<%  if(_data.user.gender) {%>
+						<div class="prompt gender">
+							<div class="field-name">gender</div>
+							<div class="field" data-fieldname="gender">
+								<%= (_data.user.gender == 0)?"femail":"mail" %>
+							</div>
+						</div>
+					<% } %>
+					
+
+					<!-- gender -->
+					<%  if(_data.user.birthyear) {%>
+						<div class="prompt age">
+							<div class="field-name">birthyear</div>
+							<div class="field" data-fieldname="age">
+								<%= _data.user.birthyear %>
+							</div>
+						</div>
+					<% } %>
+
+					<!-- state -->
+					<%  if(_data.user.state) {%>
+						<div class="prompt state">
+							<div class="field-name">state</div>
+							<div class="field" data-fieldname="state">
+								<%= _data.user.state %>
+							</div>
+						</div>
+					<% } %>
+
+					<!-- city -->
+					<%  if(_data.user.city) {%>
+						<div class="prompt city">
+							<div class="field-name">city</div>
+							<div class="field" data-fieldname="city">
+								<%= _data.user.city %>
+							</div>
+						</div>
+					<% } %>
+<% } %>
+					<div class="prompt mono">
+						<div class="field-name">my mono</div>
+						<div class='grid infinite'>
+
+						<%  for(var i in _data.mono) {%>
+							<div class='four columns grid-item'>
+								<a href="/mono?m=<%= encodeURIComponent(_data.mono[i]._id) %>">
+								<% if(_data.mono[i].imagedata && _data.mono[i].imagedata.length ) {%>
+									<img class="scale-with-grid" src="<%= (_data.mono[i].imagedata instanceof Array)?_data.mono[i].imagedata[0]:_data.mono[i].imagedata %>" />
+								<% } else if(_data.mono[i].imageurl && _data.mono[i].imageurl.length ) {%>
+									<img class="scale-with-grid" src="<%= (_data.mono[i].imageurl instanceof Array)?_data.mono[i].imageurl[0]:_data.mono[i].imageurl %>" />
+								<% } else if(_data.mono[i].imageyoutube && _data.mono[i].imageyoutube.length ) {%>
+									<img class="scale-with-grid" src="http://img.youtube.com/vi/<%= (_data.mono[i].imageyoutube instanceof Array)?_data.mono[i].imageyoutube[0]:_data.mono[i].imageyoutube %>/0.jpg" />
+								<% } else { %>
+									<div class='scale-with-grid'>no image</div>
+								<% } %>
+								</a>
+								<div class='caption'>
+									<span class='title'><a href="/mono?m=<%= encodeURIComponent(_data.mono[i]._id) %>"><%= _data.mono[i].mono_name %></a>
+									</span>
+								</div>
+							</div>
+						<% } %>
+						
+						</div>
+						
+					</div>
+					</fieldset>
+
+			</div>
+		</div>
+		
+	<%- include footer.ejs %>
+  </div>
+  </body>
+</html>

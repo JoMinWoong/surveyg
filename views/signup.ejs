@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html ng-app>
+<head>
+<title><%= title %></title>
+<%- include head.ejs %>
+</head>
+<body>
+<!-- http://docs.angularjs.org/guide/forms -->
+
+	<div class='container'>
+		<%- include header.ejs %>
+
+		<div class="page-canvas">
+			<div class="signup-wrapper">
+
+				<h1>Join monogatari today.</h1>
+
+				<form id="fm" method="POST" action="signup" class="">
+					<fieldset class="textbox">
+
+					<!-- email -->
+						<div class="prompt email">
+							<div class="field-name">Email address</div>
+							<div class="field" data-fieldname="email">
+								<div class="sidetip" style="display:none">
+									<p class="tip">What’s your email address?</p>
+									<p class="ok isaok">We will email you a confirmation.</p>
+									<p class="checking">Validating...</p>
+									<p class="invalid error" role="alert">Doesn't look like a
+										valid email.</p>
+									<p class="blank error" role="alert">An email is required!</p>
+									<p class="taken error " role="alert">
+										This email is already registered. Want to <a href="/signin">signin</a>
+										or <a href="/account/resend_password">recover your
+											password</a>?
+									</p>
+									<p class="domain tip">
+										Did you mean <em><a class="js-email-correction" href="#"></a>
+										</em>?
+									</p>
+								</div>
+								<input class="email-input" type="email" autocomplete="off" value="" name="user[email]" aria-required="true">
+							</div>
+						</div>
+
+
+					<!-- password -->
+						<div class="prompt password">
+							<div class="field-name">Create a password</div>
+							<div class="field" data-fieldname="password">
+
+								<div class="sidetip" style="display:none">
+									<p class="tip">6 characters or more! Be tricky.</p>
+									<p class="perfect isaok">Password is perfect!</p>
+									<p class="ok isaok">Password is okay.</p>
+									<p class="weak isaok">Password could be more secure.</p>
+									<p class="weak error" role="alert">Password is not secure
+										enough.</p>
+									<p class="obvious error" role="alert">Password is too
+										obvious.</p>
+									<p class="invalid error" role="alert">Password must be at
+										least 6 characters.</p>
+									<p class="blank error" role="alert">Password cannot be
+										blank!</p>
+								</div>
+								<input type="password" value="" name="user[user_password]" aria-required="true">
+							</div>
+							<div class="score">
+								<span><b class="fill"></b>
+								</span>
+							</div>
+						</div>
+
+					<!-- username -->
+						<div class="prompt username">
+							<div class="field-name">Choose your username</div>
+							<div class="field" data-fieldname="username">
+								<div class="sidetip" style="display:none">
+									<p class="ok isaok">
+										Username is available.<br>You can change it later.
+									</p>
+									<p class="tip">Don't worry, you can change it later.</p>
+									<p class="checking">Validating...</p>
+									<p class="taken error" role="alert">This username is
+										already taken!</p>
+									<p class="invalid error" role="alert">Invalid username!
+										Alphanumerics only.</p>
+									<p class="blank error" role="alert">
+										A username is required!<br>You can change it later.
+									</p>
+								</div>
+								<input type="text" autocomplete="off" value="" data-pre-input-value="" name="user[screen_name]" minlength="2" maxlength="20" aria-required="true">
+							</div>
+							<div class="suggestions">
+								Suggestions:
+								<ul></ul>
+							</div>
+						</div>
+						
+					<!-- gender -->
+						<div class="prompt gender">
+							<div class="field-name">Choose your gender</div>
+							<div class="field" data-fieldname="gender">
+								<input type="radio" name="user[gender]" id="user_gender_male" value="1"><label for="user_gender_male">male</label>
+								<input type="radio" name="user[gender]" id="user_gender_female" value="0"><label for="user_gender_female">femail</label>
+							</div>
+						</div>
+
+					<!-- birthyear -->
+						<div class="prompt birthyear">
+							<div class="field-name">Choose your birthyear</div>
+							<div class="field" data-fieldname="birthyear">
+								<!-- input type="number" min="1" max="300" autocomplete="off" value="" data-pre-input-value="" name="user[birthyear]" aria-required="true" -->
+								<select name="user[birthyear]" id="years"><option></option></select>
+							</div>
+						</div>
+
+					<!-- area -->
+						<div class="prompt area">
+							<div class="field-name">state</div>
+							<div class="field" data-fieldname="area">
+							<select name="user[state]"><option></option>
+								<%  for(var i in _jsdata.state) {%>
+									<option value = "<%= _jsdata.state[i].id %>"><%= _jsdata.state[i].name %></option>
+								<% } %>
+							<select>
+							</div>
+						</div>
+
+					<!-- city -->
+						<div class="prompt city">
+							<div class="field-name">city</div>
+							<div class="field" data-fieldname="city">
+								<input type="text" autocomplete="off" value="" data-pre-input-value="" name="user[city]" maxlength="15" aria-required="true">
+							</div>
+						</div>
+					</fieldset>
+					<div style="margin-bottom:1%;">
+							 <input type="checkbox" id="agreeFlg"  value="1"> 
+								 <label for="agreeFlg"> I agree to the terms below : </label>
+					</div>
+					<%- include principle.ejs %>
+
+					<div class="standby">
+						<p>Creating your account…</p>
+					</div>
+
+					<fieldset class="doit">
+
+						<div class="sign-up-box">
+							<input type="button" id="submit_button" value="Create my account">
+						</div>
+
+						<div class="befound">
+							<p>Note: Others will be able to find you by name, username or
+								email. Your email will not be shown publicly. You can change
+								your privacy settings at any time.</p>
+						</div>
+
+					</fieldset>
+
+				</form>
+			</div>
+		</div>
+
+		<script src="/javascripts/signup.js"></script>
+		<%- include footer.ejs %>
+	</div>
+</body>
+</html>

@@ -1,0 +1,15 @@
+.DS_Store
+Thumbs.db
+.*~
+*~
+*.sw[po]
+*.tgz
+*.zip
+*.tar
+*.bak
+*.log
+._*
+.buildpath
+.project
+.settings
+log

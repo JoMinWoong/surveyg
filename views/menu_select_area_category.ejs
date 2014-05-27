@@ -1,0 +1,27 @@
+
+<li class="dropdown">
+	<a href="#" class="dropdown-toggle" data-toggle="dropdown" ><span  id="title_state"><%= (typeof query != "undefined" && query.state)?query.state:"state" %></span><b class='caret'></b></a>
+	<ul class="dropdown-menu">
+	<li onclick = "_com.setState('',this);">state</li>
+	<%  for(var i in _jsdata.state) {%>
+		<li onclick = "_com.setState('<%= _jsdata.state[i].id %>',this);"><%= _jsdata.state[i].name %></li>
+	<% } %>
+	</ul>
+	<input type="hidden" name="state" id="state" value="<%= (typeof query != "undefined" && query.state)?query.state:"" %>">
+</li>
+
+<li class="dropdown">
+	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span id="title_category"><%= (typeof query != "undefined" && query.category)?query.category:"category" %></span><b class='caret'></b></a>
+	<ul class="dropdown-menu">
+		<li onclick = "_com.setCategory('',this);">category</li>
+		<%  for(var i in _jsdata.category) {%>
+			<li onclick = "_com.setCategory('<%= _jsdata.category[i].name %>',this);"><%= _jsdata.category[i].name %></li>
+		<% } %>
+	</ul>
+	<input type="hidden" name="category" id="category" value="<%= (typeof query != "undefined" && query.category)?query.category:"" %>">
+</li>
+<li>
+<div style="height:35px;margin-top:10px;">
+	<input type="text" name="search" id="search" placeholder="search" value="<%= (typeof query != "undefined" && query.search)?query.search:"" %>" /> <input type="submit" value="go">
+</div>
+</li>

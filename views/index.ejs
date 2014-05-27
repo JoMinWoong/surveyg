@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <%- include head.ejs %>
+    <link rel='stylesheet' href='/stylesheets/list.css' />
+  </head>
+  <body>
+  
+  
+  <div class='container'>
+	<%- include header.ejs %>
+		<div class='content'>
+			<div class='sixteen columns'>
+				<!-- h2 class='strapline'>Limited edition prints, delivered worldwide for £60</h2 -->
+				
+			</div>
+			<div class='grid infinite' id="contentList">
+			<% for(var i in _jsdata.category) {%>
+				<div class='four columns grid-item'>
+					<a href="/category?c=<%= encodeURIComponent(_jsdata.category[i].name) %>">
+						<img  class="scale-with-grid" src="images/<%= _jsdata.category[i].img %>" />
+					</a>
+					<div class='caption'>
+						<span class='title'><a href="/category?c=<%= encodeURIComponent(_jsdata.category[i].name) %>"><%= _jsdata.category[i].name %></a>
+						</span>
+					</div>
+				</div>
+			<% } %>
+			</div>
+		</div>
+		<%- include footer.ejs %>
+	</div>
+  </body>
+</html>

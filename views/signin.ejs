@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <%- include head.ejs %>
+  </head>
+  <body>
+  <div class='container'>
+		<%- include header.ejs %>
+		
+
+		<div class="page-canvas">
+
+  <div class="signin-wrapper" data-login-message="">
+    <h1>Sign in to Monogatary</h1>
+    <form action="signin" class="clearfix signin js-signin" method="post">
+      <fieldset>
+        <legend class="visuallyhidden">Sign In</legend>
+      
+        <div class="clearfix field">
+          <input class="js-username-field email-input js-initial-focus" type="text" name="session[username_or_email]" autocomplete="on" value="" placeholder="Username or email">
+        </div>
+      
+        <div class="clearfix field">
+          <input class="js-password-field" type="password" name="session[password]" placeholder="Password">
+        </div>
+		<div style="color:red;font-weight:bold;">
+			<%= (typeof _data != "undefined")?_data:"" %>
+		</div>      
+      
+      </fieldset>
+      <div class="captcha js-captcha">
+      </div>
+      <div class="clearfix">
+        <button type="submit" class="submit btn primary-btn">Sign in</button>
+      
+        <fieldset class="subchck">
+          <label class="remember">
+            <input type="checkbox" value="1" name="remember_me" checked="checked">
+            Remember me
+          </label>
+        </fieldset>
+        <span class="separator">·</span>
+        <a class="forgot" href="/account/resend_password">Forgot password?</a>
+      
+      </div>
+    </form>
+  </div>
+
+  <div class="clearfix mobile has-sms">
+    <p class="signup-helper">
+      New to Monogatary?
+      <a id="login-signup-link" href="/signup">Sign up now »</a>
+    </p>
+  </div>
+
+</div>
+
+
+		<%- include footer.ejs %>
+	</div>
+  </body>
+</html>

@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <%- include head.ejs %>
+    <link rel='stylesheet' href='/stylesheets/list.css' />
+  </head>
+  <body>
+  <!-- { "datatype" : 1, "email" : "new7@e.e", 
+  "user_password" : "ce8ae485d9655f02ad6565111f10af0acbe2f54a", 
+  "screen_name" : "un", "gender" : "1", "age" : "34", "state" : "Iwate-ken", "city" : "iwa", "_id" : ObjectId("52f7304a54faac3802000001") } -->
+  <div class='container'>
+	<%- include header.ejs %>
+		
+		<div class="page-canvas">
+			<div class="signup-wrapper">
+
+				<h1><%= title %></h1>
+
+					<fieldset class="textbox">
+					
+					
+<% if(signinflg) { %>
+	<form id="fm" method="POST" action="updateUserinfo">
+					<!-- email -->
+						<div class="prompt email">
+							<div class="field-name">Email address</div>
+							<div class="field" data-fieldname="email">
+								<%= _data.user.email %>
+							</div>
+						</div>
+					<!-- username -->
+						<div class="prompt username">
+							<div class="field-name">username</div>
+							<div class="field" data-fieldname="username">
+								<%= _data.user.screen_name %>
+							</div>
+						</div>
+					<!-- username -->
+						<div class="prompt password">
+							<div class="field-name">password</div>
+							<div class="field" data-fieldname="username">
+								<input type="password" name="user[user_password]" />
+							</div>
+						</div>
+					<!-- gender -->
+						<div class="prompt gender">
+							<div class="field-name">gender</div>
+							<div class="field" data-fieldname="gender">
+								<%= (_data.user.gender == 0)?"femail":"mail" %>
+							</div>
+						</div>
+					
+
+					<!-- birthyear -->
+					<div class="prompt age">
+						<div class="field-name">birthyear</div>
+						<div class="field" data-fieldname="age">
+							<% if(_data.user.birthyear){ %>
+								<%= _data.user.birthyear %>
+							<% } else { %>
+								<select name="user[birthyear]" id="years"><option></option></select>
+							<% } %>
+						</div>
+					</div>
+
+					<!-- state -->
+					<div class="prompt state">
+						<div class="field-name">state</div>
+						<div class="field" data-fieldname="state">
+							<select name="user[state]"><option></option>
+								<%  for(var i in _jsdata.state) {%>
+									<option selected="<%= (_data.user.state == _jsdata.state[i].id)?'selected':'' %>" value = "<%= _jsdata.state[i].id %>"><%= _jsdata.state[i].name %></option>
+								<% } %>
+							<select>
+						</div>
+					</div>
+
+					<!-- city -->
+					<div class="prompt city">
+						<div class="field-name">city</div>
+						<div class="field" data-fieldname="city">
+							<input type="text" name="user[city]" value="<%= _data.user.city %>"/>
+						</div>
+					</div>
+					<div>
+						<input type="submit" value="sub">
+					</div>
+</form>
+<% } else { %>
+					<!-- username -->
+						<div class="prompt username">
+							<div class="field-name">username</div>
+							<div class="field" data-fieldname="username">
+								<%= _data.user.screen_name %>
+							</div>
+						</div>
+				
+<% } %>
+					<div class="prompt mono">
+						<div class="field-name">mono</div>
+						<div class='grid infinite'>
+
+						<%  for(var i in _data.mono) {%>
+							<div class='four columns grid-item' id='mono_<%= i %>'>
+								<a href="/mono?m=<%= encodeURIComponent(_data.mono[i]._id) %>">
+								<img class="scale-with-grid" src="<%= (_data.mono[i].images[0].imagedata)?_data.mono[i].images[0].imagedata:(_data.mono[i].images[0].imageurl)?_data.mono[i].images[0].imageurl:(_data.mono[i].images[0].imageyoutube)?'http://img.youtube.com/vi/' + _data.mono[i].images[0].imageyoutube + '/0.jpg':'' %>" />
+								</a>
+								<div class='caption'>
+									<!-- span class='title'>
+										<a href="/mono?m=<%= encodeURIComponent(_data.mono[i]._id) %>"><%= _data.mono[i].mono_name %></a>
+									</span -->
+									<!-- a href="#" class="btn_red">btn</a -->
+									<button class="btn-primary" style="width:70px;height:40px;" onclick="$SIGNUP.mono_delete('<%= _data.mono[i]._id %>','mono_<%= i %>')" type="button" value="Subscribe">delete</button>
+									<button class="btn-primary" style="width:70px;height:40px;" onclick="$SIGNUP.to_edit('<%= _data.mono[i]._id %>')" type="button" value="Subscribe">edit</button>
+								</div>
+							</div>
+						<% } %>
+						
+						</div>
+						
+					</div>
+					</fieldset>
+
+			</div>
+		</div>
+		<script src="/javascripts/userinfo.js"></script>
+	<%- include footer.ejs %>
+  </div>
+  </body>
+</html>

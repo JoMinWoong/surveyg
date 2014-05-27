@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html ng-app>
+<head>
+<title><%= title %></title>
+<%- include head.ejs %>
+<link rel='stylesheet' href='/stylesheets/registration.css' />
+<script src="/javascripts/registration.js"></script>
+</head>
+<body>
+<!-- http://docs.angularjs.org/guide/forms -->
+
+	<div class='container'>
+		<%- include header.ejs %>
+
+		<div class="page-canvas">
+			<div class="signup-wrapper">
+
+				<h1>edit mono</h1>
+				<form action="monoedit" id="fm" class="dropzone" method="post">
+					<input type="hidden" name="mono[id]" value="<%= _data.mono._id %>">
+					<fieldset class="textbox">
+
+					<!-- mononame -->
+						<div class="prompt mononame">
+							<div class="field-name">Choose your mononame</div>
+							<div class="field" data-fieldname="mononame">
+								<div class="sidetip" style="display:none">
+									<p class="ok isaok">
+										mononame is available.<br>You can change it later.
+									</p>
+									<p class="tip">Don't worry, you can change it later.</p>
+									<p class="checking">Validating...</p>
+									<p class="invalid error" role="alert">Invalid mononame! Alphanumerics only.</p>
+									<p class="blank error" role="alert">
+										A mononame is required!<br>You can change it later.
+									</p>
+								</div>
+								<input type="text" class="registration-text" value="<%= _data.mono.mono_name %>" data-pre-input-value="" name="mono[mono_name]" minlength="2" maxlength="20" aria-required="true">
+							</div>
+						</div>
+
+					<!-- mono image -->
+						<% for(var i = 0,ml = (_data.mono.images)?_data.mono.images.length:0;i < ml ;i++) {%>
+							<div class="prompt">
+								<div class="field-name">mono image<%= i %></div>
+									<div>
+										<input type="radio" class="image-type" name="image<%= i %>" id="image<%= i %>-imagedata" <%= (_data.mono.images[i].imagedata)?'checked':'' %> >file</input>
+										<input type="radio" class="image-type" name="image<%= i %>" id="image<%= i %>-imageurl" <%= (_data.mono.images[i].imageurl)?'checked':'' %> >file(url)</input>
+										<input type="radio" class="image-type" name="image<%= i %>" id="image<%= i %>-imageyoutube"<%= (_data.mono.images[i].imageyoutube)?'checked':'' %> >youtube</input>
+									</div>
+									<img id="image<%= i %>-uploadPreview" style="width: 50%;" src="<%= (_data.mono.images[i].imagedata)?_data.mono.images[i].imagedata:(_data.mono.images[i].imageurl)?_data.mono.images[i].imageurl:(_data.mono.images[i].imageyoutube)?'http://img.youtube.com/vi/' + _data.mono.images[i].imageyoutube + '/0.jpg':'' %>" />
+									<div>
+										<input class="image-file" id="image<%= i %>-file" type="file"  />
+										<input type="hidden" class="image<%= i %>-input" name="mono[imagedata][]" value="<%= (_data.mono.images[i].imagedata)?(_data.mono.images[i].imagedata):'' %>" id="image<%= i %>-imagedata-input">
+										<input type="url" style="display:none;" class="image<%= i %>-input" value="<%= (_data.mono.images[i].imageurl)?(_data.mono.images[i].imageurl):'' %>" placeholder="ex>http://...image.png" name="mono[imageurl][]" id="image<%= i %>-imageurl-input">
+										<input type="text" style="display:none;" class="image<%= i %>-input" value="<%= (_data.mono.images[i].imageyoutube)?(_data.mono.images[i].imageyoutube):'' %>" placeholder="ex>watch?v=[Pe0n5mqkf6c]" name="mono[imageyoutube][]" id="image<%= i %>-imageyoutube-input">
+									</div>
+								</div>
+							
+						<% } %>
+						<% for(i;i < 4 ;i++) {%>
+							<div class="prompt">
+								<div class="field-name">mono image<%= i %></div>
+									<div>
+										<input type="radio" class="image-type" name="image<%= i %>" id="image<%= i %>-imagedata" 'checked' >file</input>
+										<input type="radio" class="image-type" name="image<%= i %>" id="image<%= i %>-imageurl"> file(url)</input>
+										<input type="radio" class="image-type" name="image<%= i %>" id="image<%= i %>-imageyoutube" >youtube</input>
+									</div>
+									<img id="image<%= i %>-uploadPreview" style="width: 50%;" src="" />
+									<div>
+										<input class="image-file" id="image<%= i %>-file" type="file"  />
+										<input type="hidden" class="image<%= i %>-input" name="mono[imagedata][]" value="" id="image<%= i %>-imagedata-input">
+										<input type="url" style="display:none;" class="image<%= i %>-input" value="" placeholder="ex>http://...image.png" name="mono[imageurl][]" id="image<%= i %>-imageurl-input">
+										<input type="text" style="display:none;" class="image<%= i %>-input" value="" placeholder="ex>watch?v=[Pe0n5mqkf6c]" name="mono[imageyoutube][]" id="image<%= i %>-imageyoutube-input">
+									</div>
+								</div>
+							
+						<% } %>
+
+					<!-- category -->
+						<div class="prompt gender">
+							<div class="field-name">Choose your category</div>
+							<div class="field" data-fieldname="category">
+								<select name="mono[category]" id="category">
+									<option value=""></option>
+									<%  for(var i in _jsdata.category) {%>
+										<option <%= (_data.mono.category == _jsdata.category[i].id)?"selected":"" %> value="<%= _jsdata.category[i].id %>"><%= _jsdata.category[i].name %></option>
+									<% } %>
+								</select>
+							</div>
+						</div>
+				<!-- country/state -->
+						<div class="prompt">
+							<div class="field-name">country/state</div>
+							<div class="field" data-fieldname="state">
+								<select name="mono[state]" id="state">
+									<option value=""></option>
+									<%  for(var i in _jsdata.state) {%>
+										<option <%= (_data.mono.state == _jsdata.state[i].id)?"selected":"" %> value="<%= _jsdata.state[i].id %>"><%= _jsdata.state[i].name %></option>
+									<% } %>
+								</select>
+							</div>
+						</div>
+					<!-- city/suburb -->
+						<div class="prompt">
+							<div class="field-name">city</div>
+							<div class="field" data-fieldname="city_suburb">
+								<input class="registration-text" type="text"  value="<%= (typeof _data.mono.city != "undefined")?_data.mono.city:"" %>" data-pre-input-value="" name="mono[city]" maxlength="50" placeholder="comma seperated list">
+							</div>
+						</div>
+					<!-- exchange wish -->
+						<div class="prompt">
+							<div class="field-name">exchange wish</div>
+							<div class="field" data-fieldname="exchange_wish">
+								<input class="registration-text" type="text"  value="<%= (typeof _data.mono.exchangewish != "undefined")?_data.mono.exchangewish:"" %>" data-pre-input-value="" name="mono[exchangewish]" maxlength="50" placeholder="comma seperated list">
+							</div>
+						</div>
+					<!-- tag -->
+						<div class="prompt">
+							<div class="field-name">tag</div>
+							<div class="field" data-fieldname="tag">
+								<input class="registration-text" type="text"  value="<%= (typeof _data.mono.tag != "undefined")?_data.mono.tag:"" %>" data-pre-input-value="" name="mono[tag]" maxlength="50" placeholder="comma seperated list">
+							</div>
+						</div>
+
+					<!-- about mono -->
+						<div class="prompt">
+							<div class="field-name">about mono</div>
+							<div class="field" data-fieldname="about_mono">
+								<textarea  name="mono[about_mono]" style="width:95%;"><%= (typeof _data.mono.about_mono != "undefined")?_data.mono.about_mono:"" %></textarea>
+							</div>
+						</div>
+
+					</fieldset>
+
+
+					<div class="standby">
+						<p>edit mono…</p>
+					</div>
+
+					<fieldset class="doit">
+
+						<div class="sign-up-box">
+							<input class="submit button promotional" type="submit" name="submit_button" value="edit mono">
+						</div>
+					</fieldset>
+
+				</form>
+			</div>
+		</div>
+		<%- include footer.ejs %>
+	</div>
+
+</body>
+</html>

@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <%- include head.ejs %>
+    <link rel='stylesheet' href='/stylesheets/list.css' />
+  </head>
+  <body>
+  <div class='container'>
+		<%- include header.ejs %>
+		<div class='content'>
+			<div class='sixteen columns'>
+				<!-- h2 class='strapline'>Limited edition prints, delivered worldwide for £60</h2 -->
+			</div>
+			<div class='grid infinite' id='contentList'>
+			<%  for(var i in _data.mono) {%>
+				<div class='four columns grid-item'>
+					<a href="/mono?m=<%= encodeURIComponent(_data.mono[i]._id) %>">
+					<% if(_data.mono[i].images && _data.mono[i].images.length ) { %>
+						<img class="scale-with-grid" src="<%= (_data.mono[i].images[0].imagedata)?_data.mono[i].images[0].imagedata:(_data.mono[i].images[0].imageurl)?_data.mono[i].images[0].imageurl:(_data.mono[i].images[0].imageyoutube)?'http://img.youtube.com/vi/' + _data.mono[i].images[0].imageyoutube + '/0.jpg':'' %>" />
+					<% } %>
+					</a>
+					<div class='caption'>
+						<span class='title'><a href="/mono?m=<%= encodeURIComponent(_data.mono[i]._id) %>"><%= _data.mono[i].mono_name %></a>
+						</span>
+					</div>
+				</div>
+			<% } %>
+			</div>
+
+		</div>
+		<%- include footer.ejs %>
+	</div>
+  </body>
+</html>

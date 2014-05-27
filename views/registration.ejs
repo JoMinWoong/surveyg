@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html ng-app>
+<head>
+<title><%= title %></title>
+<%- include head.ejs %>
+<link rel='stylesheet' href='/stylesheets/registration.css' />
+<script src="/javascripts/registration.js"></script>
+</head>
+<body>
+<!-- http://docs.angularjs.org/guide/forms -->
+	<div class='container'>
+		<%- include header.ejs %>
+		<div class="page-canvas">
+			<div class="signup-wrapper">
+
+				<h1>register mono</h1>
+				<form action="registration" id="fm" class="dropzone" method="post">
+					<fieldset class="textbox">
+
+					<!-- mononame -->
+						<div class="prompt mononame">
+							<div class="field-name">Choose your mononame</div>
+							<div class="field" data-fieldname="mononame">
+								<div class="sidetip" style="display:none">
+									<p class="ok isaok">
+										mononame is available.<br>You can change it later.
+									</p>
+									<p class="tip">Don't worry, you can change it later.</p>
+									<p class="checking">Validating...</p>
+									<p class="invalid error" role="alert">Invalid mononame! Alphanumerics only.</p>
+									<p class="blank error" role="alert">
+										A mononame is required!<br>You can change it later.
+									</p>
+								</div>
+								<input type="text" class="registration-text" value="" data-pre-input-value="" name="mono[mono_name]" minlength="2" maxlength="20" aria-required="true">
+							</div>
+						</div>
+
+					<!-- mono image -->
+						<div class="prompt">
+							<div class="field-name">mono image1</div>
+							<div>
+								<input type="radio" class="image-type" name="image1" id="image1-imagedata" checked>file</input>
+								<input type="radio" class="image-type" name="image1" id="image1-imageurl">file(url)</input>
+								<input type="radio" class="image-type" name="image1" id="image1-imageyoutube">youtube</input>
+							</div>
+							<img id="image1-uploadPreview" style="width: 50%;display:none;"/>
+							<div>
+								<input class="image-file" id="image1-file" type="file"  />
+								<input type="hidden" class="image1-input" name="mono[imagedata][]" id="image1-imagedata-input">
+								<input type="url" style="display:none;" class="image1-input" placeholder="ex>http://...image.png" name="mono[imageurl][]" id="image1-imageurl-input">
+								<input type="text" style="display:none;" class="image1-input" placeholder="ex>watch?v=[Pe0n5mqkf6c]" name="mono[imageyoutube][]" id="image1-imageyoutube-input">
+							</div>
+						</div>
+						<div class="prompt">
+							<div class="field-name">mono image2</div>
+							<div>
+								<input type="radio" class="image-type" name="image2" id="image2-imagedata" checked>file</input>
+								<input type="radio" class="image-type" name="image2" id="image2-imageurl">file(url)</input>
+								<input type="radio" class="image-type" name="image2" id="image2-imageyoutube">youtube</input>
+							</div>
+							<img id="image2-uploadPreview" style="width: 50%;display:none;"/>
+							<div>
+								<input class="image-file" id="image2-file" type="file"  />
+								<input type="hidden" class="image2-input" name="mono[imagedata][]" id="image2-imagedata-input">
+								<input type="url" style="display:none;" class="image2-input" placeholder="ex>http://...image.png" name="mono[imageurl][]" id="image2-imageurl-input">
+								<input type="text" style="display:none;" class="image2-input" placeholder="ex>watch?v=[Pe0n5mqkf6c]" name="mono[imageyoutube][]" id="image2-imageyoutube-input">
+							</div>
+						</div>
+						<div class="prompt">
+							<div class="field-name">mono image3</div>
+							<div>
+								<input type="radio" class="image-type" name="image3" id="image3-imagedata" checked>file</input>
+								<input type="radio" class="image-type" name="image3" id="image3-imageurl">file(url)</input>
+								<input type="radio" class="image-type" name="image3" id="image3-imageyoutube">youtube</input>
+							</div>
+							<img id="image3-uploadPreview" style="width: 50%;display:none;"/>
+							<div>
+								<input class="image-file" id="image3-file" type="file"  />
+								<input type="hidden" class="image3-input" name="mono[imagedata][]" id="image3-imagedata-input">
+								<input type="url" style="display:none;" class="image3-input" placeholder="ex>http://...image.png" name="mono[imageurl][]" id="image3-imageurl-input">
+								<input type="text" style="display:none;" class="image3-input" placeholder="ex>watch?v=[Pe0n5mqkf6c]" name="mono[imageyoutube][]" id="image3-imageyoutube-input">
+							</div>
+						</div>
+						<div class="prompt">
+							<div class="field-name">mono image4</div>
+							<div>
+								<input type="radio" class="image-type" name="image4" id="image4-imagedata" checked>file</input>
+								<input type="radio" class="image-type" name="image4" id="image4-imageurl">file(url)</input>
+								<input type="radio" class="image-type" name="image4" id="image4-imageyoutube">youtube</input>
+							</div>
+							<img id="image4-uploadPreview" style="width: 50%;display:none;"/>
+							<div>
+								<input class="image-file" id="image4-file" type="file"  />
+								<input type="hidden" class="image4-input" name="mono[imagedata][]" id="image4-imagedata-input">
+								<input type="url" style="display:none;" class="image4-input" placeholder="ex>http://...image.png" name="mono[imageurl][]" id="image4-imageurl-input">
+								<input type="text" style="display:none;" class="image4-input" placeholder="ex>watch?v=[Pe0n5mqkf6c]" name="mono[imageyoutube][]" id="image4-imageyoutube-input">
+							</div>
+						</div>
+					<!-- category -->
+						<div class="prompt gender">
+							<div class="field-name">Choose your category</div>
+							<div class="field" data-fieldname="category">
+								<select name="mono[category]" id="category">
+									<option value=""></option>
+									<%  for(var i in _jsdata.category) {%>
+										<option value="<%= _jsdata.category[i].id %>"><%= _jsdata.category[i].name %></option>
+									<% } %>
+								</select>
+							</div>
+						</div>
+				<!-- country/state -->
+						<div class="prompt">
+							<div class="field-name">country/state</div>
+							<div class="field" data-fieldname="state">
+								<select name="mono[state]" id="state">
+									<option value=""></option>
+									<%  for(var i in _jsdata.state) {%>
+										<option value="<%= _jsdata.state[i].id %>"><%= _jsdata.state[i].name %></option>
+									<% } %>
+								</select>
+							</div>
+						</div>
+					<!-- city/suburb -->
+						<div class="prompt">
+							<div class="field-name">city</div>
+							<div class="field" data-fieldname="city_suburb">
+								<input class="registration-text" type="text"  value="" data-pre-input-value="" name="mono[city]" maxlength="50" placeholder="comma seperated list">
+							</div>
+						</div>
+					<!-- exchange wish -->
+						<div class="prompt">
+							<div class="field-name">exchange wish</div>
+							<div class="field" data-fieldname="exchange_wish">
+								<input class="registration-text" type="text"  value="" data-pre-input-value="" name="mono[exchangewish]" maxlength="50" placeholder="comma seperated list">
+							</div>
+						</div>
+					<!-- contact address -->
+						<div class="prompt">
+							<div class="field-name">contact address</div>
+							<div class="field" data-fieldname="exchange_wish">
+								<input class="registration-text" type="text"  value="" data-pre-input-value="" name="mono[contactaddress]" maxlength="50">
+							</div>
+						</div>
+					<!-- tag -->
+						<div class="prompt">
+							<div class="field-name">tag</div>
+							<div class="field" data-fieldname="tag">
+								<input class="registration-text" type="text"  value="" data-pre-input-value="" name="mono[tag]" maxlength="50" placeholder="comma seperated list">
+							</div>
+						</div>
+
+					<!-- about mono -->
+						<div class="prompt">
+							<div class="field-name">about mono</div>
+							<div class="field" data-fieldname="about_mono">
+								<textarea  name="mono[about_mono]" style="width:95%;"></textarea>
+							</div>
+						</div>
+
+						<div class="prompt optin">
+							<label> <input type="checkbox" checked="checked"
+								name="mono[use_cookie_personalization]" value="1"> 
+								 <span>Tailor monogatari based on my
+									recent website visits. <a
+									class="cookie-personalization-support"
+									href="https://support.monogatari.com/articles/20169421"
+									target="_blank">Learn more</a>.</span> </label>
+						</div>
+
+
+
+					</fieldset>
+					<%- include principle.ejs %>
+
+
+					<div class="standby">
+						<p>register mono…</p>
+					</div>
+
+					<fieldset class="doit">
+
+						<div class="sign-up-box">
+							<input class="submit button promotional" type="submit" name="submit_button" value="register mono">
+						</div>
+
+						<div class="befound">
+							<p>Note: Others will be able to find you by name, username or
+								email. Your email will not be shown publicly. You can change
+								your privacy settings at any time.</p>
+						</div>
+
+					</fieldset>
+
+				</form>
+			</div>
+		</div>
+		<%- include footer.ejs %>
+	</div>
+
+</body>
+</html>

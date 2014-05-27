@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %></title>
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/javascripts/chat.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+  </head>
+  <body>
+  <input type="hidden" id="cid">
+	<div id="content" style="width: 500px; height: 300px; margin: 0 0 20px 0; border: solid 1px #999; overflow-y: scroll;"></div>
+	<div class="controls">Name: <input id="username" style="width:350px;"><br>
+	<input id="field" style="width:350px;">
+	<input id="send" type="button" value="send">
+	<input id="sendtoadmin" type="button" value="sendtoadmin">
+	</div>
+	<br><br>
+    <h1><%= title %></h1>
+    <p>Welcome to <%= title %></p>
+    <% console.log(data); %>
+    <ul>
+    <% for(var i in data) {%>
+   <li><%= data[i].to %>, <%= data[i].message %>, <%= data[i].created_at %> , <%= data[i].url %></li>
+<% } %>
+</ul>
+<a href="/employee/new">to insert new data</a>
+  </body>
+</html>
