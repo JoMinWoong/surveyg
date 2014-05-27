@@ -24,13 +24,14 @@ var express = require('express')
 	_data.viewers = {};
 
 var app = express();
-
+app.enable('trust proxy');
+app.set("trust proxy", true);
 //express session
 app.use(express.cookieParser());
 app.use(express.session({secret: 'h2Y5ecret1sS2cret'}));
 
 app.configure(function(){
-  app.set('port', process.env.PORT || 3000);
+  app.set('port', process.env.PORT || 50000);
   app.set('views', __dirname + '/views');
   app.set('view engine', 'ejs');
   app.set('view options', {layout: false});
@@ -54,7 +55,6 @@ var viewerProvider = new viewerProvider('localhost', 27017);
 var monoProvider = new MonoProvider('localhost',27017);
 
 //Routes
-
 //view index.ejs
 //TODO display viewers list in chatting window
 app.get('/', function(req, res){
@@ -70,17 +70,20 @@ app.get('/', function(req, res){
 
 
 app.get('/questionaire', function(req, res){
+	//_lib.log(req._parsedUrl,"req_parsedurl");
+	//_lib.log(req.headers,"req.headers");
+	//_lib.log(req.cookies, "req.cookies");
 	res.render('questionaire', {
         title: 'Top',
         session: req.session
     });
 });
 
-//submitservey
-app.post('/submitservey', function(req, res){
+//submitsurvey
+app.post('/submitsurvey', function(req, res){
 	_lib.log(req,"req");
 	//_lib.log(res,"res");
-	monoProvider.insertServey(req.body,req,function(error, result){
+	monoProvider.insertSurvey(req.body,req,function(error, result){
 		//res.redirect('/message?'+((result)?'signupdone':'signupfail'));
 		res.render('message', {
             title: 'message',
@@ -422,7 +425,7 @@ app.get('/random', function(req, res){
 //TODO //view admin.ejs
 
 
-var io = require("socket.io").listen(app.listen(3000));
+var io = require("socket.io").listen(app.listen(50000));
 
 io.sockets.on("connection", function (socket) {
 	if(socket) socket.emit("message", { message: "welcome to the chat",data:_data.viewers });

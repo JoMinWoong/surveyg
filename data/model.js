@@ -12,10 +12,10 @@ var Db = require("mongodb").Db,
 	//expressValidator = require("express-validator"),//https://github.com/ctavan/express-validator
 //var crypto = require("crypto"),shasum = crypto.createHash("sha1");
 	jsdata = require("./jsdata"),
-	com = require("../lib/common"),_lib = com.lib;
+	com = require("../lib/common"),_lib = com.lib,geoip = require('geoip-lite');;
 
 monoProvider = function(host, port) {
-  this.db= new Db("serveyg", new Server(host, port, {safe: false}, {auto_reconnect: true}, {}));
+  this.db= new Db("surveyg", new Server(host, port, {safe: false}, {auto_reconnect: true}, {}));
   this.db.open(function(){});
 };
 
@@ -26,8 +26,8 @@ monoProvider.prototype.getCollection_user= function(callback) {
   });
 };
 
-monoProvider.prototype.getCollection_servey= function(callback) {
-  this.db.collection("servey", function(error, mono_collection) {
+monoProvider.prototype.getCollection_survey= function(callback) {
+  this.db.collection("survey", function(error, mono_collection) {
     if( error ) callback(error);
     else callback(null, mono_collection);
   });
@@ -92,10 +92,10 @@ var lib = {
 
 
 //add new mono
-monoProvider.prototype.insertServey = function(data,req,callback) {
+monoProvider.prototype.insertSurvey = function(data,req,callback) {
 	//TODO <<<<
-	_lib.log(data,"insertservey");
-	var allImg = [],i=0,ml=0,serveydata = data.servey;
+	_lib.log(data,"insertsurvey");
+	var surveydata = data.survey;
 	var cols = {
 			writername: {req:1,match:{func:_lib.isValiableText,msg:"valid mono_name required"},max_length:50},
 			q1: {},
@@ -103,22 +103,22 @@ monoProvider.prototype.insertServey = function(data,req,callback) {
 			q3: {},
 			q4: {},
 			q5: {}
-		    },insert_p = {res:{created_at:new Date(),datatype:1},msg:{}};
+		    },insert_p = {res:{inputdata:{},created_at:new Date(),datatype:1},msg:{}};
 	
 	for ( var k in cols) {
 		
 		//required
-		if(cols[k].req && !serveydata[k]){
+		if(cols[k].req && !surveydata[k]){
 			insert_p.msg[k] = "["+k + "] : required";
 		}
-		if(!serveydata[k])continue;
+		if(!surveydata[k])continue;
 		if(cols[k].match){
-			if(cols[k].match.regx && !cols[k].match.regx.test(serveydata[k])) insert_p.msg[k] = cols[k].match.msg;
-			else if(cols[k].match.arr && cols[k].match.arr.indexOf(serveydata[k]) === -1) insert_p.msg[k] = cols[k].match.msg;
-			else if(cols[k].match.func && !cols[k].match.func(serveydata[k])) insert_p.msg[k] = cols[k].match.msg;
+			if(cols[k].match.regx && !cols[k].match.regx.test(surveydata[k])) insert_p.msg[k] = cols[k].match.msg;
+			else if(cols[k].match.arr && cols[k].match.arr.indexOf(surveydata[k]) === -1) insert_p.msg[k] = cols[k].match.msg;
+			else if(cols[k].match.func && !cols[k].match.func(surveydata[k])) insert_p.msg[k] = cols[k].match.msg;
 		}
-		if(cols[k].len && cols[k].len[0] > serveydata[k].length && cols[k].len[1] < serveydata[k].length) insert_p.msg[k] = "["+k + "] : wrong length of characters";
-		insert_p.res[k] = (cols[k].convert)?cols[k].convert(serveydata[k]):serveydata[k];
+		if(cols[k].len && cols[k].len[0] > surveydata[k].length && cols[k].len[1] < surveydata[k].length) insert_p.msg[k] = "["+k + "] : wrong length of characters";
+		insert_p.res.inputdata[k] = (cols[k].convert)?cols[k].convert(surveydata[k]):surveydata[k];
 	}
 	//error
 	if(Object.keys(insert_p.msg).length){
@@ -126,13 +126,24 @@ monoProvider.prototype.insertServey = function(data,req,callback) {
 		return;
 	}
 	else {
-		insert_p.res.req = req;
+		//insert_p.res.req = req;
+		//_lib.log(req._parsedUrl,"req_parsedurl");
+		var url = require('url'),ip;
+		insert_p.res.headers = req.headers;
+		_lib.log(insert_p.res.headers,"insert_p.res.headers");
+		//insert_p.res.cookies = req.cookies;
+		//_lib.log(insert_p.res.cookies,"insert_p.res.cookies");
+		insert_p.res.url = url.parse(req.headers.referer, true);
+		_lib.log(insert_p.res.url,"insert_p.res.url");
+		ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
+		insert_p.res.area = (geoip.lookup(ip)||"");
+		insert_p.res.nwinfo = {"ip":ip};
 	}
-	this.getCollection_servey(function(error, servey_collection) {
+	this.getCollection_survey(function(error, survey_collection) {
 		//TODO : password sha1,add created_at,required
 	      if( error ) callback(error);
 	      else {
-	    	  servey_collection.insert(insert_p.res, function(error,results) {
+	    	  survey_collection.insert(insert_p.res, function(error,results) {
 	              callback(null, results);
 	          });
 	      }
@@ -647,33 +658,6 @@ monoProvider.prototype.updateUserInfo = function(data,ses,callback) {
 	}
 };
 
-
-//find mono by category
-monoProvider.prototype.findMonoBySearch = function(p,ses,callback) {
-	var db = this.db, col_mono = db.collection("mono"),
-		query_parameter = {datatype:1},q_category,res = {},i=0,id,s_a =[],category = jsdata.data.category;
-	  //set category data
-	for (; i < category.length; i++) {
-		if(category[i].name == p.category){
-			query_parameter.category = lib.convertObjectId(category[i].id);
-			break;
-		}
-	}
-	if(p.state)query_parameter.state = p.state;
-	  p.search.replace("　"," ").split(" ").map(function(x){if(x)s_a.push(new RegExp(".*"+x+".*"));});
-	  if(s_a.length)query_parameter["$or"] = [{mono_name:{$in:s_a}},{comment:{$in:s_a}},{tag:{$in:s_a}}];
-	  //TODO double quotation => double + quotation "double quotation" => double quotation
-  	  col_mono.find(query_parameter).sort({mono_name:1}).toArray(function(error, results) {
-  		  res.mono = results;
-  		  if( error ) callback(error);
-  		  else if("undefined" != typeof ses && ses.user  && ses.user.uid){
-			  lib.getUnreadMessageAndCallback(db,ses.user.uid,res,callback);
-		  }
-  		  else callback(null, res);
-  	  });
-  
-
-};
 
 //save new mono
 monoProvider.prototype.save = function(monos, callback) {
