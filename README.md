@@ -1,4 +1,0 @@
-monogatari
-==========
-
-monogatari
