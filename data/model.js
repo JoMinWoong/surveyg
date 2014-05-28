@@ -126,8 +126,7 @@ monoProvider.prototype.insertSurvey = function(data,req,callback) {
 		return;
 	}
 	else {
-		//insert_p.res.req = req;
-		//_lib.log(req._parsedUrl,"req_parsedurl");
+		//add log
 		var url = require('url'),ip,k,ck={};
 		insert_p.res.headers = req.headers;
 
@@ -142,6 +141,7 @@ monoProvider.prototype.insertSurvey = function(data,req,callback) {
 		insert_p.res.area = (geoip.lookup(ip)||{});
 		insert_p.res.nwinfo = {"ip":ip};
 		insert_p.res.surveyinfo = data.surveyinfo;
+		insert_p.res.created_at = new Date();
 	}
 	this.getCollection_survey(function(error, survey_collection) {
 		//TODO : password sha1,add created_at,required
