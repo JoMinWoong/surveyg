@@ -29,6 +29,10 @@
             <td align="left" valign="middle" bgcolor="#ffffff">
             <div>
               <form action="/submitsurvey" method="post">
+              <!-- TODO add pid(objectid) -->
+              <input type="hidden" name="surveyinfo[pid]" id="pid" value="q1">
+              <!-- TODO add uid(objectid) -->
+              <input type="hidden" name="surveyinfo[uid]" id="uid" value="u1">
                 <b> Directions </b>
                 <p> Please provide us with your full name. Your name will be printed on
                   the information that is returned to you.

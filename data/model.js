@@ -128,22 +128,30 @@ monoProvider.prototype.insertSurvey = function(data,req,callback) {
 	else {
 		//insert_p.res.req = req;
 		//_lib.log(req._parsedUrl,"req_parsedurl");
-		var url = require('url'),ip;
+		var url = require('url'),ip,k,ck={};
 		insert_p.res.headers = req.headers;
-		_lib.log(insert_p.res.headers,"insert_p.res.headers");
-		//insert_p.res.cookies = req.cookies;
-		//_lib.log(insert_p.res.cookies,"insert_p.res.cookies");
+
+		//replace "." in cookie key into "_"
+		for ( k in req.cookies) {
+			ck[k.replace(/\./g,"_")] = req.cookies[k];
+		}
+		insert_p.res.cookies = ck;
 		insert_p.res.url = url.parse(req.headers.referer, true);
-		_lib.log(insert_p.res.url,"insert_p.res.url");
+		
 		ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
-		insert_p.res.area = (geoip.lookup(ip)||"");
+		insert_p.res.area = (geoip.lookup(ip)||{});
 		insert_p.res.nwinfo = {"ip":ip};
+		insert_p.res.surveyinfo = data.surveyinfo;
 	}
 	this.getCollection_survey(function(error, survey_collection) {
 		//TODO : password sha1,add created_at,required
 	      if( error ) callback(error);
 	      else {
 	    	  survey_collection.insert(insert_p.res, function(error,results) {
+	    		  _lib.log(results,"results");
+	    		  if(results){
+	    			  
+	    		  }
 	              callback(null, results);
 	          });
 	      }
