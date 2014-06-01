@@ -70,13 +70,22 @@ app.get('/', function(req, res){
 
 
 app.get('/questionaire', function(req, res){
-	//_lib.log(req._parsedUrl,"req_parsedurl");
-	//_lib.log(req.headers,"req.headers");
-	//_lib.log(req.cookies, "req.cookies");
 	res.render('questionaire', {
         title: 'Top',
         session: req.session
     });
+});
+
+app.get('/analytics', function(req, res){
+	monoProvider.getAnalyticsResult(req.body,function(error, result){
+		_lib.log(result,"analytics result");
+		res.render('analytics', {
+			title: 'analytics',
+			session: req.session,
+			_jsdata: jsdata.data,
+			data: result
+		});	
+	});
 });
 
 //submitsurvey

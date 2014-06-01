@@ -158,6 +158,66 @@ monoProvider.prototype.insertSurvey = function(data,req,callback) {
 	});
 };
 
+monoProvider.prototype.getAnalyticsResult = function(reqdata, callback){
+	var db = this.db, col_survey = db.collection("survey"),res = {unreadmessage:[]};
+	var mapFunction = function() {
+		for ( var k in this.inputdata) {
+			emit(k, {
+				count : 1,
+				data : this.inputdata[k]
+			});
+		}
+	};
+	var reduceFunction = function(key, countObjVals) {
+		reducedVal = {
+			count : 0,
+			data : {}
+		};
+
+		for ( var idx = 0; idx < countObjVals.length; idx++) {
+			reducedVal.count += countObjVals[idx].count;
+			for ( var k in countObjVals[idx].data) {
+				if (!reducedVal.data[k]) {
+					reducedVal.data[k] = {};
+				}
+				if (reducedVal.data[k][countObjVals[idx].data[k]]) {
+					reducedVal.data[k][countObjVals[idx].data[k]]++;
+				} else {
+					reducedVal.data[k][countObjVals[idx].data[k]] = 1;
+				}
+			}
+			// reducedVal.qty += countObjVals[idx].data;
+		}
+		printjson(reducedVal);
+		return reducedVal;
+	};
+	col_survey.mapReduce(mapFunction, reduceFunction, { out : "result_test1", query : { datatype : 1 } },
+		      function(error, results, stats) {   // stats provided by verbose
+				_lib.log(results,"results");
+				_lib.log(stats,"stats");
+
+
+				var mapFunction2 = function() {
+					emit(this._id, {count:this.value.count,data:this.value.data[0]});
+				};
+				var reduceFunction2 = function(key, data) {
+					return {key:key, data:data};
+				};
+
+				//get question report
+				db.collection("result_test1").mapReduce(mapFunction2, reduceFunction2, { out : "result_test2", query : {} },
+					function(error, results, stats){
+						db.collection("result_test2").find().toArray(function(error, results){
+							if(error){callback(error,false);}
+							else {callback(null,results);}
+						});
+					}
+				);
+				
+				
+		      }
+	);
+};
 
 //TODO del
 //get unread message
@@ -189,7 +249,6 @@ monoProvider.prototype.findMonoById = function(did,ses,callback) {
 				//get mono list that user uploaded for exchange
 				  if("undefined" != typeof ses && ses.user  && ses.user.uid){
     					col_mono.find({"writer_id":lib.convertObjectId(ses.user.uid)}).toArray(function(error, results) {
-    						_lib.log(results,"rrreeesssuulltttsss");
 		      	      		  if( error ) callback(error);
 		      	      		  else if(results.length){
 	      	      				  res.usermono = results;
