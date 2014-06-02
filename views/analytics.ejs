@@ -9,11 +9,14 @@
   <body>
   <%- include header.ejs %>
   	<div><%-JSON.stringify(data)%></div>
-    <script>inputdata = <%-JSON.stringify(data)%> </script>
+    <script>inputdata = <%-JSON.stringify(data.inputdata)%> </script>
+    <script>useragent = <%-JSON.stringify(data.ua)%> </script>
   
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
 
+<div>PV : <%=data.pv%></div>
+<div>SU : <%=data.su%></div>
 <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
 <script>
@@ -47,7 +50,7 @@ $(function () {
                 allowDecimals: false,
                 min: 0,
                 title: {
-                    text: '返答数字'
+                    text: 'answer count'
                 }
             },
     
@@ -124,22 +127,36 @@ $(function () {
         series: [{
             type: 'pie',
             name: 'Browser share',
-            data: [
+            data: 
+            (function(){
+            	for ( var i = 0,res=[]; i < useragent.length; i++) {
+					var line = [];
+					line.push(useragent[i]._id);
+					line.push(useragent[i].count);
+					res.push(line);
+				}
+				console.log(res);
+            	return res;
+            })()
+            /* [
+            
+            	['Firefox',   3],
+                ['IE',       1],
                 ['Firefox',   45.0],
                 ['IE',       26.8],
                 ['Chrome',       12.8],
-                /*
                 {
                     name: 'Chrome',
                     y: 12.8,
                     sliced: true,
                     selected: true
                 },
-                */
+                
                 ['Safari',    8.5],
                 ['Opera',     6.2],
                 ['Others',   0.7]
-            ]
+                
+            ] */
         }]
     });
 });

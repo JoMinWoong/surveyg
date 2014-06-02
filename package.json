@@ -11,6 +11,7 @@
     "stylus": "*",
     "crypto": "*",
     "mongodb": "*",
-    "socket.io": "*"
+    "socket.io": "*",
+    "useragent": "~2.0.8"
   }
 }
