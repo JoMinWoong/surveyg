@@ -16,7 +16,7 @@ var express = require('express')
   ,_lib = com.lib
   ,url = require("url")
   ,viewerProvider = require('./viewerdata').viewerProvider
-  ,MonoProvider = require('./data/model').monoProvider
+  ,DataProvider = require('./data/model').dataProvider
   ,jsdata = require("./data/jsdata")
   ,_data = {},admin;
 
@@ -52,13 +52,13 @@ app.configure('development', function(){
 });
 
 var viewerProvider = new viewerProvider('localhost', 27017);
-var monoProvider = new MonoProvider('localhost',27017);
+var dataProvider = new DataProvider('localhost',27017);
 
 //Routes
 //view index.ejs
 //TODO display viewers list in chatting window
 app.get('/', function(req, res){
-	monoProvider.findUnreadMessage(req.session,function(error, result){
+	dataProvider.findUnreadMessage(req.session,function(error, result){
 		res.render('index', {
 	        title: 'Top',
 	        session: req.session,
@@ -70,14 +70,27 @@ app.get('/', function(req, res){
 
 
 app.get('/questionaire', function(req, res){
+/*
 	res.render('questionaire', {
         title: 'Top',
         session: req.session
     });
+*/
+	dataProvider.insertSurveyAccessLog(req,function(error, result){
+		if(error) {
+			res.redirect('/message?'+((result)?'signupdone':'signupfail'));
+		}
+		else {
+			res.render('questionaire', {
+				title: 'Top',
+				session: req.session
+			});
+		}
+	});
 });
 
 app.get('/analytics', function(req, res){
-	monoProvider.getAnalyticsResult(req.body,function(error, result){
+	dataProvider.getAnalyticsResult(req.body,function(error, result){
 		_lib.log(result,"analytics result");
 		res.render('analytics', {
 			title: 'analytics',
@@ -92,21 +105,13 @@ app.get('/analytics', function(req, res){
 app.post('/submitsurvey', function(req, res){
 	//_lib.log(req,"req");
 	//_lib.log(res,"res");
-	monoProvider.insertSurvey(req.body,req,function(error, result){
+	dataProvider.insertSurvey(req.body,req,function(error, result){
 	if(error) {
 		res.redirect('/message?'+((result)?'signupdone':'signupfail'));
 	}
 	else {
 		res.redirect('/analytics');
 	}
-	/*
-	res.render('analytics', {
-            title: 'analytics',
-            session: req.session,
-            _jsdata:jsdata.data,
-            _data:result
-        });
-	*/
 	});
 });
 
@@ -119,7 +124,7 @@ app.get('/mypage', function(req, res){
 		res.redirect('/signin');
 		return;
 	}
-	monoProvider.findUserInformation(req.session.user.uid,req.session,function(error, result){
+	dataProvider.findUserInformation(req.session.user.uid,req.session,function(error, result){
 		res.render('userinfo', {
             title: 'mypage',
             session: req.session,
@@ -136,7 +141,7 @@ app.get('/usermessage', function(req, res){
 		res.redirect('/signin');
 		return;
 	}
-	monoProvider.findUserInformation(req.session.user.uid,req.session,function(error, result){
+	dataProvider.findUserInformation(req.session.user.uid,req.session,function(error, result){
 		res.render('usermessage', {
             title: 'usermessage',
             session: req.session,
@@ -150,7 +155,7 @@ app.get('/usermessage', function(req, res){
 //show mono info
 app.get('/userinfo', function(req, res){
 	req.session.lastPage = req._parsedUrl.path;
-	monoProvider.findUserInformation(decodeURIComponent(req.param('u')),req.session,function(error, result){
+	dataProvider.findUserInformation(decodeURIComponent(req.param('u')),req.session,function(error, result){
 		res.render('userinfo', {
             title: 'user info',
             session: req.session,
@@ -162,7 +167,7 @@ app.get('/userinfo', function(req, res){
 
 //update user info
 app.post('/updateUserinfo', function(req, res){
-	monoProvider.updateUserInfo(req.body,req.session,function(error, result){
+	dataProvider.updateUserInfo(req.body,req.session,function(error, result){
 		//res.redirect('/message?'+((result)?'signupdone':'signupfail'));
 		res.render('message', {
             title: 'message',
@@ -175,7 +180,7 @@ app.post('/updateUserinfo', function(req, res){
 
 // show mono list by category
 app.get('/category', function(req, res){
-	monoProvider.findMonoByCategory(decodeURIComponent(req.param('c')),req.session,function(error, result){
+	dataProvider.findMonoByCategory(decodeURIComponent(req.param('c')),req.session,function(error, result){
       res.render('monolist', {
             title: 'category',
             session: req.session,
@@ -192,7 +197,7 @@ app.get('/registration', function(req, res){
 		res.redirect('/signin');
 		return;
 	}
-	monoProvider.findUnreadMessage(req.session,function(error, result){
+	dataProvider.findUnreadMessage(req.session,function(error, result){
 		res.render('registration', {
 	        title: 'registration',
 	        session: req.session,
@@ -205,7 +210,7 @@ app.get('/registration', function(req, res){
 
 //register mono
 app.post('/registration', function(req, res){
-	monoProvider.insertMono(req.body,req.session.user,function(error, result){
+	dataProvider.insertMono(req.body,req.session.user,function(error, result){
 		if(result && result.length){
 			res.redirect('/mono?m='+result[0]._id);
 		}
@@ -220,7 +225,7 @@ app.post('/registration', function(req, res){
 //show mono info
 app.get('/mono', function(req, res){
 	req.session.lastPage = req._parsedUrl.path;
-	monoProvider.findMonoById(decodeURIComponent(req.param('m')),req.session,function(error, result){
+	dataProvider.findMonoById(decodeURIComponent(req.param('m')),req.session,function(error, result){
 		_lib.log(result,"result");
 		if(result){
 			res.render('mono', {
@@ -248,7 +253,7 @@ app.get('/monoedit', function(req, res){
 		res.redirect('/signin');
 		return;
 	}
-	monoProvider.findMonoById(decodeURIComponent(req.param('m')),req.session,function(error, result){
+	dataProvider.findMonoById(decodeURIComponent(req.param('m')),req.session,function(error, result){
 		res.render('monoedit', {
             title: 'monoedit',
             session: req.session,
@@ -261,7 +266,7 @@ app.get('/monoedit', function(req, res){
 //edit monoinfo
 app.post('/monoedit', function(req, res){
 	req.session.lastPage = req._parsedUrl.path;
-	monoProvider.updateMono(req.body,req.session,function(error, result){
+	dataProvider.updateMono(req.body,req.session,function(error, result){
 		if(error || !result){
 			res.render('message', {
 	            title: 'message',
@@ -278,7 +283,7 @@ app.post('/monoedit', function(req, res){
 
 //add comment
 app.post('/addcomment', function(req, res){
-	monoProvider.insertComment(req.body,req.session,function(error, result){
+	dataProvider.insertComment(req.body,req.session,function(error, result){
 		res.redirect((req.session.lastPage)?req.session.lastPage:"/");
 	});
 });
@@ -290,8 +295,8 @@ app.post('/like', function(req, res){
 		res.send("fail");
 	}
 	else {
-		//TODO add monoProvider.insertLikeDislike
-		monoProvider.updateLikeDislike(mid,{like:req.session.user.uid},function(result){
+		//TODO add dataProvider.insertLikeDislike
+		dataProvider.updateLikeDislike(mid,{like:req.session.user.uid},function(result){
 			res.send((result)?"success":"fail");
 		});
 	}
@@ -305,8 +310,8 @@ app.post('/dislike', function(req, res){
 		res.send("fail");
 	}
 	else {
-		//TODO add monoProvider.insertLikeDislike
-		monoProvider.updateLikeDislike(mid,{dislike:req.session.user.uid},function(result){
+		//TODO add dataProvider.insertLikeDislike
+		dataProvider.updateLikeDislike(mid,{dislike:req.session.user.uid},function(result){
 			res.send((result)?"success":"fail");
 		});
 	}
@@ -319,7 +324,7 @@ app.post('/sendmessage', function(req, res){
 		res.send("fail");
 	}
 	else {
-		monoProvider.sendMessage({msg:req.body,sesuser:req.session.user},function(result){
+		dataProvider.sendMessage({msg:req.body,sesuser:req.session.user},function(result){
 			res.send((result)?"success":"fail");
 		});
 	}
@@ -332,7 +337,7 @@ app.post('/deletemono', function(req, res){
 		res.send("fail");
 	}
 	else {
-		monoProvider.deleteMono({id:id,sesuser:req.session.user},function(result){
+		dataProvider.deleteMono({id:id,sesuser:req.session.user},function(result){
 			res.send((result)?"success":"fail");
 		});
 	}
@@ -340,7 +345,7 @@ app.post('/deletemono', function(req, res){
 
 //signin
 app.get('/signin', function(req, res){
-	//monoProvider.findMonoByCategory(decodeURIComponent(req.param('c')),function(error, result){
+	//dataProvider.findMonoByCategory(decodeURIComponent(req.param('c')),function(error, result){
 		res.render('signin', {
 	   		title: 'signin',
          	session: req.session,
@@ -364,7 +369,7 @@ app.post('/signin', function(req, res){
 	if(p.remember_me){
 		
 	}
-	monoProvider.findUserByEmailOrUserId(p,function(error, result){
+	dataProvider.findUserByEmailOrUserId(p,function(error, result){
 		if (result){
 			//TODO : user session start
 			req.session.user = result;
@@ -396,7 +401,7 @@ app.get('/signup', function(req, res){
 //signup
 //TODO : fail -> back to signup page with errmsg
 app.post('/signup', function(req, res){
-	monoProvider.insertUser(req.body,function(error, result){
+	dataProvider.insertUser(req.body,function(error, result){
 		//res.redirect('/message?'+((result)?'signupdone':'signupfail'));
 		var render = (req.session.lastPage)?req.session.lastPage:"index"; 
 		res.render(render, {
@@ -412,7 +417,7 @@ app.post('/signup', function(req, res){
 app.get('/search', function(req, res){
 	
 	var url = require('url'),url_parts = url.parse(req.url, true),query = url_parts.query;
-	monoProvider.findMonoBySearch(query,req.session,function(error, result){
+	dataProvider.findMonoBySearch(query,req.session,function(error, result){
       res.render('monolist', {
             title: 'search',
             query:query,
@@ -427,7 +432,7 @@ app.get('/search', function(req, res){
 app.get('/random', function(req, res){
 	
 	var url = require('url'),url_parts = url.parse(req.url, true),query = url_parts.query;
-	monoProvider.findMonoByRandom(function(error, result){
+	dataProvider.findMonoByRandom(function(error, result){
       res.render('monolist', {
             title: 'search',
             query:query,

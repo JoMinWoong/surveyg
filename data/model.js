@@ -12,25 +12,31 @@ var Db = require("mongodb").Db,
 	//expressValidator = require("express-validator"),//https://github.com/ctavan/express-validator
 //var crypto = require("crypto"),shasum = crypto.createHash("sha1");
 	jsdata = require("./jsdata"),
-	com = require("../lib/common"),_lib = com.lib,geoip = require('geoip-lite');;
-
-monoProvider = function(host, port) {
+	com = require("../lib/common"),_lib = com.lib,geoip = require('geoip-lite'),
+dataProvider = function(host, port) {
   this.db= new Db("surveyg", new Server(host, port, {safe: false}, {auto_reconnect: true}, {}));
   this.db.open(function(){});
 };
 
-monoProvider.prototype.getCollection_user= function(callback) {
+dataProvider.prototype.getCollection_user= function(callback) {
   this.db.collection("user", function(error, mono_collection) {
     if( error ) callback(error);
     else callback(null, mono_collection);
   });
 };
 
-monoProvider.prototype.getCollection_survey= function(callback) {
+dataProvider.prototype.getCollection_survey= function(callback) {
   this.db.collection("survey", function(error, mono_collection) {
     if( error ) callback(error);
     else callback(null, mono_collection);
   });
+};
+
+dataProvider.prototype.getCollection_log_access_survey= function(callback) {
+	this.db.collection("log_access_survey", function(error, mono_collection) {
+		if( error ) callback(error);
+	    else callback(null, mono_collection);
+	});
 };
 
 //query validation
@@ -90,9 +96,44 @@ var lib = {
 	}
 };
 
+//logging survey access
+dataProvider.prototype.insertSurveyAccessLog = function(req,callback) {
+	_lib.log(req.query,"log req");
+	//add log
+	var ip,k,ck={},log = {};
+	log.headers = req.headers;
+
+	//replace "." in cookie key into "_"
+	for ( k in req.cookies) {
+		ck[k.replace(/\./g,"_")] = req.cookies[k];
+	}
+	log.cookies = ck;
+	//log.url = url.parse(req.headers.host+req.originalUrl, true);
+	log.url = req.headers.host+req.originalUrl;
+	log.query = req.query;
+	ip = req.header('x-forwarded-for') || req.connection.remoteAddress;
+	log.area = (geoip.lookup(ip)||{});
+	log.nwinfo = {"ip":ip};
+	log.agent = require('useragent').parse(req.headers['user-agent']);
+	
+	log.created_at = new Date();
+	this.getCollection_log_access_survey(function(error, survey_collection) {
+		//TODO : password sha1,add created_at,required
+	      if( error ) callback(error);
+	      else {
+	    	  survey_collection.insert(log, function(error,results) {
+	    		  _lib.log(results,"results");
+	    		  if(results){
+	    			  
+	    		  }
+	              callback(null, results);
+	          });
+	      }
+	});
+};
 
 //add new mono
-monoProvider.prototype.insertSurvey = function(data,req,callback) {
+dataProvider.prototype.insertSurvey = function(data,req,callback) {
 	//TODO <<<<
 	_lib.log(data,"insertsurvey");
 	var surveydata = data.survey;
@@ -158,9 +199,9 @@ monoProvider.prototype.insertSurvey = function(data,req,callback) {
 	});
 };
 
-monoProvider.prototype.getAnalyticsResult = function(reqdata, callback){
-	//TODO uu : db.survey.distinct('cookies.connect_sid')
-	var db = this.db, col_survey = db.collection("survey"),res = {unreadmessage:[]};
+//get analyticsresult
+dataProvider.prototype.getAnalyticsResult = function(reqdata, callback){
+	var db = this.db, col_survey = db.collection("survey"),col_log_access_survey = db.collection("log_access_survey"),res = {unreadmessage:[]};
 	var mapFunction = function() {
 		for ( var k in this.inputdata) {
 			emit(k, {
@@ -204,25 +245,48 @@ monoProvider.prototype.getAnalyticsResult = function(reqdata, callback){
 				var reduceFunction2 = function(key, data) {
 					return {key:key, data:data};
 				};
-
+				var res = {};
 				//get question report
 				db.collection("result_test1").mapReduce(mapFunction2, reduceFunction2, { out : "result_test2", query : {} },
 					function(error, results, stats){
 						db.collection("result_test2").find().toArray(function(error, results){
 							if(error){callback(error,false);}
-							else {callback(null,results);}
+							else {
+								//PV : db.log_access_survey.find().count()
+								col_log_access_survey.find().count(function(error,pv){
+									if(error){callback(error,false);}
+									else {
+										//SU : db.survey.distinct('cookies.connect_sid')
+										col_survey.distinct('cookies.connect_sid',function(error, su){
+											if(error){callback(error,false);}
+											else {
+												//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
+												col_log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}},function(error,ua){
+													if(error){callback(error,false);}
+													else {
+														res.inputdata = results;
+														res.pv = pv;
+														res.su = su.length;
+														res.ua = ua;
+														_lib.log(ua,"pv");
+														callback(null,res);
+													}
+												});
+											}
+										});
+									}
+								})
+							}
 						});
 					}
 				);
-				
-				
 		      }
 	);
 };
 
 //TODO del
 //get unread message
-monoProvider.prototype.findUnreadMessage = function(ses,callback) {
+dataProvider.prototype.findUnreadMessage = function(ses,callback) {
 	var db = this.db, col_user = db.collection("mono_user"),res = {unreadmessage:[]};
 	if("undefined" != typeof ses && ses.user  && ses.user.uid){
 		col_user.findOne({_id:lib.convertObjectId(ses.user.uid)},function(error, results) {
@@ -235,7 +299,7 @@ monoProvider.prototype.findUnreadMessage = function(ses,callback) {
 	}
 };
 //find detailed information of Mono
-monoProvider.prototype.findMonoById = function(did,ses,callback) {
+dataProvider.prototype.findMonoById = function(did,ses,callback) {
 	var db = this.db, col_user = db.collection("mono_user"), res = {mono:{},usermono:{},unreadmessage:[]},col_mono = db.collection("mono");
 
 	  col_mono.findOne({"_id":lib.convertObjectId(did),datatype:1},function(error, result) {
@@ -272,7 +336,7 @@ monoProvider.prototype.findMonoById = function(did,ses,callback) {
 
 
 //find mono by category
-monoProvider.prototype.findMonoByCategory = function(p_category,ses,callback) {
+dataProvider.prototype.findMonoByCategory = function(p_category,ses,callback) {
 	var db = this.db, col_mono = db.collection("mono"),res = {unreadmessage:[]},i=0,id,category = jsdata.data.category;
 	  for (; i < category.length; i++) {
 		  if(category[i].name == p_category){
@@ -294,7 +358,7 @@ monoProvider.prototype.findMonoByCategory = function(p_category,ses,callback) {
 };
 
 //find random mono
-monoProvider.prototype.findMonoByRandom = function(callback) {
+dataProvider.prototype.findMonoByRandom = function(callback) {
 	var db = this.db, col_mono = db.collection("mono"),res = {unreadmessage:[]},limit = 20;
 	col_mono.count(function(error,results){
 		_lib.log(results,"count");
@@ -316,7 +380,7 @@ monoProvider.prototype.findMonoByRandom = function(callback) {
 };
 
 //findUserInformation
-monoProvider.prototype.findUserInformation = function(uid,ses,callback) {
+dataProvider.prototype.findUserInformation = function(uid,ses,callback) {
 	var db = this.db, col_user = db.collection("mono_user"), col_mono = db.collection("mono"),res = {},i=0;
 	  col_user.find({datatype:1,_id: lib.convertObjectId(uid) }).toArray(function(error, results) {
 		  if( error || !results.length) callback(error);
@@ -339,7 +403,7 @@ monoProvider.prototype.findUserInformation = function(uid,ses,callback) {
 };
 
 //findUserByEmailOrUserId
-monoProvider.prototype.findUserByEmailOrUserId = function(p,callback) {
+dataProvider.prototype.findUserByEmailOrUserId = function(p,callback) {
 	var db = this.db, col_user = db.collection("mono_user"),q={datatype:1};
 	if(_lib.isMail(p.session.username_or_email)){
 		  q.email = p.session.username_or_email;
@@ -356,7 +420,7 @@ monoProvider.prototype.findUserByEmailOrUserId = function(p,callback) {
 };
 //<<<<<<<<<<<<
 //updateLikeDislike
-monoProvider.prototype.updateLikeDislike = function(mid,data,callback) {
+dataProvider.prototype.updateLikeDislike = function(mid,data,callback) {
 	if(!_lib.isID(mid)){
 		callback(false);
 	}
@@ -420,7 +484,7 @@ monoProvider.prototype.updateLikeDislike = function(mid,data,callback) {
 
 
 //update mono
-monoProvider.prototype.updateMono = function(monodata,ses,callback) {
+dataProvider.prototype.updateMono = function(monodata,ses,callback) {
 	var allImg = [],i=0,ml=0,data_mono = monodata.mono;
 	for (i = 0,ml = ((data_mono.imagedata)?data_mono.imagedata.length:0); i < ml; i++) {
 		//_lib.log(data_mono.imagedata,"data_mono.imagedata");
@@ -490,7 +554,7 @@ monoProvider.prototype.updateMono = function(monodata,ses,callback) {
 };
 
 //add new comment
-monoProvider.prototype.insertComment = function(data,ses,callback) {
+dataProvider.prototype.insertComment = function(data,ses,callback) {
 	_lib.log(data,"insertComment_data");
 	/*
 	{ comment:
@@ -547,7 +611,7 @@ monoProvider.prototype.insertComment = function(data,ses,callback) {
 };
 
 //sendMessage
-monoProvider.prototype.sendMessage = function(data,callback) {
+dataProvider.prototype.sendMessage = function(data,callback) {
 	var cols = {
 		    title: {convert:_lib.htmlEncoding},
 		    message: {convert:_lib.htmlEncoding}
@@ -569,7 +633,7 @@ monoProvider.prototype.sendMessage = function(data,callback) {
 };
 
 //deleteMono
-monoProvider.prototype.deleteMono = function(data,callback) {
+dataProvider.prototype.deleteMono = function(data,callback) {
 	var insert_p = {res:{datatype:0,update_at:new Date()},msg:{}};
 	this.getCollection_mono(function(error, mono_collection) {
 	      if( error ) callback(error);
@@ -583,7 +647,7 @@ monoProvider.prototype.deleteMono = function(data,callback) {
 };
 
 //add message
-monoProvider.prototype.addMessage = function(data,ses,callback) {
+dataProvider.prototype.addMessage = function(data,ses,callback) {
 	if(!_lib.isID(data.comment.monoid)){
 		callback(null,false);
 	}
@@ -616,7 +680,7 @@ monoProvider.prototype.addMessage = function(data,ses,callback) {
 };
 
 //add new user
-monoProvider.prototype.insertUser = function(userdata,callback) {
+dataProvider.prototype.insertUser = function(userdata,callback) {
 	var cols = {
 			email: {req:1,match:{wid:/\S+@\S+\.\S+/.test,msg:"valid email required"},max_length:50},
 			/*
@@ -673,7 +737,7 @@ monoProvider.prototype.insertUser = function(userdata,callback) {
 };
 
 //updateUserInfo
-monoProvider.prototype.updateUserInfo = function(data,ses,callback) {
+dataProvider.prototype.updateUserInfo = function(data,ses,callback) {
 	var cols = {
 		    user_password: {req:1,match:{wid:/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])[0-9a-zA-Z]{8,20}$/,msg:"valid password required"},convert:lib.convertPassword},
 		    gender: {match:{wid:["0","1"],msg:"valid gender required"}},
@@ -728,7 +792,7 @@ monoProvider.prototype.updateUserInfo = function(data,ses,callback) {
 
 
 //save new mono
-monoProvider.prototype.save = function(monos, callback) {
+dataProvider.prototype.save = function(monos, callback) {
     this.getCollection_mono(function(error, mono_collection) {
       if( error ) callback(error);
       else {
@@ -751,4 +815,4 @@ monoProvider.prototype.save = function(monos, callback) {
     });
 };
 
-exports.monoProvider = monoProvider;
+exports.dataProvider = dataProvider;
