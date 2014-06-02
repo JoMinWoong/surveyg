@@ -264,12 +264,24 @@ dataProvider.prototype.getAnalyticsResult = function(reqdata, callback){
 												col_log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}},function(error,ua){
 													if(error){callback(error,false);}
 													else {
-														res.inputdata = results;
-														res.pv = pv;
-														res.su = su.length;
-														res.ua = ua;
-														_lib.log(ua,"pv");
-														callback(null,res);
+														
+														col_survey.distinct('cookies.connect_sid',function(error, su){
+															if(error){callback(error,false);}
+															else {
+																//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
+																col_survey.aggregate({$group:{_id:"$area.city",count:{$sum:1}}},function(error,area){
+																	if(error){callback(error,false);}
+																	else {
+																		res.inputdata = results;
+																		res.pv = pv;
+																		res.su = su.length;
+																		res.ua = ua;
+																		res.area = area;
+																		callback(null,res);
+																	}
+																});
+															}
+														});
 													}
 												});
 											}

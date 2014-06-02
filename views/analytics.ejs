@@ -8,9 +8,10 @@
   </head>
   <body>
   <%- include header.ejs %>
-  	<div><%-JSON.stringify(data)%></div>
+  	<div style="display:none;"><%-JSON.stringify(data)%></div>
     <script>inputdata = <%-JSON.stringify(data.inputdata)%> </script>
     <script>useragent = <%-JSON.stringify(data.ua)%> </script>
+    <script>area = <%-JSON.stringify(data.area)%> </script>
   
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
@@ -95,18 +96,18 @@ $(function () {
 </script>
 
 <br><br><br>
-<!-- area pie chart -->
-<div id="areapiechart" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+<!-- useragent pie chart -->
+<div id="useragentpiechart" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
 <script>
 $(function () {
-    $('#areapiechart').highcharts({
+    $('#useragentpiechart').highcharts({
         chart: {
             plotBackgroundColor: null,
             plotBorderWidth: null,
             plotShadow: false
         },
         title: {
-            text: 'area pie chart'
+            text: 'useragent pie chart'
         },
         tooltip: {
     	    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
@@ -138,30 +139,59 @@ $(function () {
 				console.log(res);
             	return res;
             })()
-            /* [
-            
-            	['Firefox',   3],
-                ['IE',       1],
-                ['Firefox',   45.0],
-                ['IE',       26.8],
-                ['Chrome',       12.8],
-                {
-                    name: 'Chrome',
-                    y: 12.8,
-                    sliced: true,
-                    selected: true
-                },
-                
-                ['Safari',    8.5],
-                ['Opera',     6.2],
-                ['Others',   0.7]
-                
-            ] */
         }]
     });
 });
 </script>
 
+<br><br><br>
+<!-- area pie chart -->
+<div id="areapiechart" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+<script>
+$(function () {
+    $('#areapiechart').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: 'area pie chart'
+        },
+        tooltip: {
+    	    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'area share',
+            data: 
+            (function(){
+            	for ( var i = 0,res=[]; i < area.length; i++) {
+					var line = [];
+					line.push(area[i]._id);
+					line.push(area[i].count);
+					res.push(line);
+				}
+				console.log(res);
+            	return res;
+            })()
+        }]
+    });
+});
+</script>
 
 
   </body>
