@@ -8,8 +8,8 @@
   </head>
   <body>
   <%- include header.ejs %>
-  
-    <div><%-JSON.stringify(data)%> </div>
+  	<div><%-JSON.stringify(data)%></div>
+    <script>inputdata = <%-JSON.stringify(data)%> </script>
   
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
@@ -20,6 +20,14 @@
 
 
 $(function () {
+		for ( var i = 0,xAxis = [],tmp = {a:{ name: "a", data: [], stack: 'stack_a' },b:{ name: "b", data: [], stack: 'stack_b' }},series=[tmp.a,tmp.b]; i < inputdata.length; i++) {
+			xAxis.push(inputdata[i]._id);
+			for ( var k in inputdata[i].value.data) {
+				if(tmp[k]){
+					tmp[k].data.push(inputdata[i].value.data[k]);
+				}
+			}
+		}
         $('#container').highcharts({
     
             chart: {
@@ -31,14 +39,15 @@ $(function () {
             },
     
             xAxis: {
-                categories: ['Apples', 'Oranges', 'Pears', 'Grapes', 'Bananas']
+                //categories: ['Apples', 'Oranges', 'Pears', 'Grapes', 'Bananas']
+                categories: xAxis
             },
     
             yAxis: {
                 allowDecimals: false,
                 min: 0,
                 title: {
-                    text: 'Number of fruits'
+                    text: '返答数字'
                 }
             },
     
@@ -56,7 +65,9 @@ $(function () {
                 }
             },
     
-            series: [{
+            series: series
+            /*
+            [{
                 name: 'John',
                 data: [5, 3, 4, 7, 2],
                 stack: 'male'
@@ -73,10 +84,68 @@ $(function () {
                 data: [3, 0, 4, 4, 3],
                 stack: 'female'
             }]
+            */
         });
     });
 
 
 </script>
+
+<br><br><br>
+<!-- area pie chart -->
+<div id="areapiechart" style="min-width: 310px; height: 400px; max-width: 600px; margin: 0 auto"></div>
+<script>
+$(function () {
+    $('#areapiechart').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: null,
+            plotShadow: false
+        },
+        title: {
+            text: 'area pie chart'
+        },
+        tooltip: {
+    	    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'Browser share',
+            data: [
+                ['Firefox',   45.0],
+                ['IE',       26.8],
+                ['Chrome',       12.8],
+                /*
+                {
+                    name: 'Chrome',
+                    y: 12.8,
+                    sliced: true,
+                    selected: true
+                },
+                */
+                ['Safari',    8.5],
+                ['Opera',     6.2],
+                ['Others',   0.7]
+            ]
+        }]
+    });
+});
+</script>
+
+
+
   </body>
 </html>

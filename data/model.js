@@ -159,6 +159,7 @@ monoProvider.prototype.insertSurvey = function(data,req,callback) {
 };
 
 monoProvider.prototype.getAnalyticsResult = function(reqdata, callback){
+	//TODO uu : db.survey.distinct('cookies.connect_sid')
 	var db = this.db, col_survey = db.collection("survey"),res = {unreadmessage:[]};
 	var mapFunction = function() {
 		for ( var k in this.inputdata) {

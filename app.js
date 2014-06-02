@@ -93,13 +93,20 @@ app.post('/submitsurvey', function(req, res){
 	//_lib.log(req,"req");
 	//_lib.log(res,"res");
 	monoProvider.insertSurvey(req.body,req,function(error, result){
-		//res.redirect('/message?'+((result)?'signupdone':'signupfail'));
-		res.render('analytics', {
+	if(error) {
+		res.redirect('/message?'+((result)?'signupdone':'signupfail'));
+	}
+	else {
+		res.redirect('/analytics');
+	}
+	/*
+	res.render('analytics', {
             title: 'analytics',
             session: req.session,
             _jsdata:jsdata.data,
             _data:result
         });
+	*/
 	});
 });
 
