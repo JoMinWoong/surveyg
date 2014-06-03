@@ -70,15 +70,9 @@ app.get('/', function(req, res){
 
 
 app.get('/questionaire', function(req, res){
-/*
-	res.render('questionaire', {
-        title: 'Top',
-        session: req.session
-    });
-*/
 	dataProvider.insertSurveyAccessLog(req,function(error, result){
 		if(error) {
-			res.redirect('/message?'+((result)?'signupdone':'signupfail'));
+			res.redirect('/message?fail');
 		}
 		else {
 			res.render('questionaire', {
@@ -88,6 +82,25 @@ app.get('/questionaire', function(req, res){
 		}
 	});
 });
+
+
+app.get('/questionaireform', function(req, res){
+	dataProvider.insertSurveyAccessLog(req,function(error, result){
+		if(error) {
+			res.redirect('/message?fail');
+		}
+		else {
+			res.render('questionaireform', {
+				title: 'Top',
+				session: req.session
+			});
+		}
+	});
+});
+
+
+
+
 
 app.get('/analytics', function(req, res){
 	dataProvider.getAnalyticsResult(req.body,function(error, result){
