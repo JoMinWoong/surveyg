@@ -93,8 +93,10 @@ em.clearly_highlight_element a.clearly_highlight_delete_element:hover {
 	touch-action: pan-x pan-y;
 }
 </style>
+<script>data = <%-JSON.stringify(data)%>; </script>
 </head>
 <body bgcolor="#ffffff">
+<div><%- JSON.stringify(data) %></div>
 	<div id="cboxOverlay" style="display: none;"></div>
 	<div id="colorbox" class=""
 		style="padding-bottom: 57px; padding-right: 28px; display: none;">
@@ -158,8 +160,14 @@ em.clearly_highlight_element a.clearly_highlight_delete_element:hover {
 									<td align="left" valign="middle" bgcolor="#ffffff">
 										<div>
 											<form action="/submitsurvey" method="post">
+											<input type="hidden" name="pid" value="<%- data._id %>"/>
+											<input type="hidden" name="datagroup" value="<%- data.datagroup %>"/>
+											
 												<!-- ***** content ***** -->
 												<div id="content"></div>
+												<ol><li style="list-style:none;">
+												<input type="submit"/>
+												</li></ol>
 											</form>
 										</div></td>
 								</tr>
@@ -170,12 +178,7 @@ em.clearly_highlight_element a.clearly_highlight_delete_element:hover {
 								</tr>
 							</tbody>
 						</table>
-
-
-
-
-
-
+						
 					</td>
 				</tr>
 			</tbody>
@@ -183,5 +186,6 @@ em.clearly_highlight_element a.clearly_highlight_delete_element:hover {
 	</center>
 
 
+<script src="/javascripts/form.js"></script>
 </body>
 </html>

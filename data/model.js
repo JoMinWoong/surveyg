@@ -81,7 +81,11 @@ var lib = {
 		return insert_p;
 	},
 	convertObjectId:function(p){
-		return require("mongodb").ObjectID(""+p);
+		try {
+			return require("mongodb").ObjectID(""+p);
+		} catch (e) {
+			return "";
+		}
 	},
 	getUnreadMessageAndCallback:function(db,id,res,callback){
 		//user info(message from other users)
@@ -97,10 +101,10 @@ var lib = {
 };
 
 //logging survey access
-dataProvider.prototype.insertSurveyAccessLog = function(req,callback) {
+dataProvider.prototype.getSurveyForm = function(req,callback) {
 	_lib.log(req.query,"log req");
 	//add log
-	var ip,k,ck={},log = {};
+	var db = this.db, ip,k,ck={},log = {};
 	log.headers = req.headers;
 
 	//replace "." in cookie key into "_"
@@ -122,11 +126,18 @@ dataProvider.prototype.insertSurveyAccessLog = function(req,callback) {
 	      if( error ) callback(error);
 	      else {
 	    	  survey_collection.insert(log, function(error,results) {
-	    		  _lib.log(results,"results");
-	    		  if(results){
-	    			  
+	    		  if(error){
+	    			  if(error){callback(error,false);}
 	    		  }
-	              callback(null, results);
+	    		  else {
+	    			  //get questionaireform data to generate on page
+	    			  db.collection("questionaireform").findOne({_id:lib.convertObjectId(req.query.pid)},function(error,result){
+	    				  if(error){callback(error,false);}
+	    				  else {
+			    			  callback(null, result); 
+	    				  }
+		    		  }); 
+	    		  }
 	          });
 	      }
 	});
@@ -136,7 +147,7 @@ dataProvider.prototype.insertSurveyAccessLog = function(req,callback) {
 dataProvider.prototype.insertSurvey = function(data,req,callback) {
 	//TODO <<<<
 	_lib.log(data,"insertsurvey");
-	var surveydata = data.survey;
+	var surveydata = data[data.datagroup];
 	var cols = {
 			writername: {req:1,match:{func:_lib.isValiableText,msg:"valid mono_name required"},max_length:50},
 			q1: {},
@@ -144,8 +155,12 @@ dataProvider.prototype.insertSurvey = function(data,req,callback) {
 			q3: {},
 			q4: {},
 			q5: {}
-		    },insert_p = {res:{inputdata:{},created_at:new Date(),datatype:1},msg:{}};
-	
+		    },
+		    //insert_p = {res:{inputdata:surveydata,pid:data.pid,created_at:new Date(),datatype:1},msg:{}};
+		    insert_p = {res:{inputdata:surveydata,pid:data.pid,created_at:new Date(),datatype:1},msg:{}};
+			//TODO >>>>>>>>>>>>>>>>>>>>>>>>>>>> datagropu -> inputdata 
+	//TODO validation check
+	/*
 	for ( var k in cols) {
 		
 		//required
@@ -161,6 +176,7 @@ dataProvider.prototype.insertSurvey = function(data,req,callback) {
 		if(cols[k].len && cols[k].len[0] > surveydata[k].length && cols[k].len[1] < surveydata[k].length) insert_p.msg[k] = "["+k + "] : wrong length of characters";
 		insert_p.res.inputdata[k] = (cols[k].convert)?cols[k].convert(surveydata[k]):surveydata[k];
 	}
+	*/
 	//error
 	if(Object.keys(insert_p.msg).length){
 		callback(null,false);
@@ -189,7 +205,6 @@ dataProvider.prototype.insertSurvey = function(data,req,callback) {
 	      if( error ) callback(error);
 	      else {
 	    	  survey_collection.insert(insert_p.res, function(error,results) {
-	    		  _lib.log(results,"results");
 	    		  if(results){
 	    			  
 	    		  }

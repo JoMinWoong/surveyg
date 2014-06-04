@@ -70,7 +70,7 @@ app.get('/', function(req, res){
 
 
 app.get('/questionaire', function(req, res){
-	dataProvider.insertSurveyAccessLog(req,function(error, result){
+	dataProvider.getSurveyForm(req,function(error, result){
 		if(error) {
 			res.redirect('/message?fail');
 		}
@@ -85,13 +85,20 @@ app.get('/questionaire', function(req, res){
 
 
 app.get('/questionaireform', function(req, res){
-	dataProvider.insertSurveyAccessLog(req,function(error, result){
+	dataProvider.getSurveyForm(req,function(error, result){
 		if(error) {
 			res.redirect('/message?fail');
+		}
+		else if(!result) {
+			res.render('message', {
+				title:'message',
+				message:'[87106]no form'
+			});
 		}
 		else {
 			res.render('questionaireform', {
 				title: 'Top',
+				data:result,
 				session: req.session
 			});
 		}
