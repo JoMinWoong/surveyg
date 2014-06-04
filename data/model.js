@@ -146,8 +146,7 @@ dataProvider.prototype.getSurveyForm = function(req,callback) {
 //add new mono
 dataProvider.prototype.insertSurvey = function(data,req,callback) {
 	//TODO <<<<
-	_lib.log(data,"insertsurvey");
-	var surveydata = data[data.datagroup];
+	
 	var cols = {
 			writername: {req:1,match:{func:_lib.isValiableText,msg:"valid mono_name required"},max_length:50},
 			q1: {},
@@ -157,7 +156,10 @@ dataProvider.prototype.insertSurvey = function(data,req,callback) {
 			q5: {}
 		    },
 		    //insert_p = {res:{inputdata:surveydata,pid:data.pid,created_at:new Date(),datatype:1},msg:{}};
-		    insert_p = {res:{inputdata:surveydata,pid:data.pid,created_at:new Date(),datatype:1},msg:{}};
+		    //insert_p = {res:{inputdata:surveydata,pid:data.pid,created_at:new Date(),datatype:1},msg:{}};
+			insert_p = {res:data,msg:{}};
+			insert_p.res.created_at = new Date();
+			insert_p.res.datatype = 1;
 			//TODO >>>>>>>>>>>>>>>>>>>>>>>>>>>> datagropu -> inputdata 
 	//TODO validation check
 	/*
@@ -215,7 +217,7 @@ dataProvider.prototype.insertSurvey = function(data,req,callback) {
 };
 
 //get analyticsresult
-dataProvider.prototype.getAnalyticsResult = function(reqdata, callback){
+dataProvider.prototype.getAnalyticsResult = function(reqdata, query, callback){
 	var db = this.db, col_survey = db.collection("survey"),col_log_access_survey = db.collection("log_access_survey"),res = {unreadmessage:[]};
 	var mapFunction = function() {
 		for ( var k in this.inputdata) {
@@ -248,62 +250,71 @@ dataProvider.prototype.getAnalyticsResult = function(reqdata, callback){
 		printjson(reducedVal);
 		return reducedVal;
 	};
-	col_survey.mapReduce(mapFunction, reduceFunction, { out : "result_test1", query : { datatype : 1 } },
-		      function(error, results, stats) {   // stats provided by verbose
-				var mapFunction2 = function() {
-					emit(this._id, {count:this.value.count,data:this.value.data[0]});
-				};
-				var reduceFunction2 = function(key, data) {
-					return {key:key, data:data};
-				};
-				var res = {};
-				//get question report
-				db.collection("result_test1").mapReduce(mapFunction2, reduceFunction2, { out : "result_test2", query : {} },
-					function(error, results, stats){
-						db.collection("result_test2").find().toArray(function(error, results){
-							if(error){callback(error,false);}
-							else {
-								//PV : db.log_access_survey.find().count()
-								col_log_access_survey.find().count(function(error,pv){
-									if(error){callback(error,false);}
-									else {
-										//SU : db.survey.distinct('cookies.connect_sid')
-										col_survey.distinct('cookies.connect_sid',function(error, su){
-											if(error){callback(error,false);}
-											else {
-												//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
-												col_log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}},function(error,ua){
-													if(error){callback(error,false);}
-													else {
-														col_survey.distinct('cookies.connect_sid',function(error, su){
-															if(error){callback(error,false);}
-															else {
-																//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
-																col_survey.aggregate({$group:{_id:"$area.city",count:{$sum:1}}},function(error,area){
-																	if(error){callback(error,false);}
-																	else {
-																		res.inputdata = results;
-																		res.pv = pv;
-																		res.su = su.length;
-																		res.ua = ua;
-																		res.area = area;
-																		callback(null,res);
-																	}
-																});
-															}
-														});
-													}
-												});
-											}
-										});
-									}
-								});
-							}
-						});
-					}
-				);
-		      }
-	);
+	db.collection("questionaireform").findOne({_id:lib.convertObjectId(query.pid),datatype:1},function(error,qf){
+		for ( var i = 0,questionform = {}; i < qf.input.length; i++) {
+			questionform[qf.input[i]._id] = qf.input[i];
+			
+		}
+		_lib.log(questionform,"questionform");
+		var reportsubject = [];
+		col_survey.mapReduce(mapFunction, reduceFunction, { out : "result_test1", query : { datatype : 1 } },
+			      function(error, results, stats) {   // stats provided by verbose
+					var mapFunction2 = function() {
+						emit(this._id, {count:this.value.count,data:this.value.data[0]});
+					};
+					var reduceFunction2 = function(key, data) {
+						return {key:key, data:data};
+					};
+					var res = {};
+					//get question report
+					db.collection("result_test1").mapReduce(mapFunction2, reduceFunction2, { out : "result_test2", query : {} },
+						function(error, results, stats){
+							db.collection("result_test2").find().toArray(function(error, results){
+								if(error){callback(error,false);}
+								else {
+									//PV : db.log_access_survey.find().count()
+									col_log_access_survey.find().count(function(error,pv){
+										if(error){callback(error,false);}
+										else {
+											//SU : db.survey.distinct('cookies.connect_sid')
+											col_survey.distinct('cookies.connect_sid',function(error, su){
+												if(error){callback(error,false);}
+												else {
+													//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
+													col_log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}},function(error,ua){
+														if(error){callback(error,false);}
+														else {
+															col_survey.distinct('cookies.connect_sid',function(error, su){
+																if(error){callback(error,false);}
+																else {
+																	//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
+																	col_survey.aggregate({$group:{_id:"$area.city",count:{$sum:1}}},function(error,area){
+																		if(error){callback(error,false);}
+																		else {
+																			res.inputdata = results;
+																			res.pv = pv;
+																			res.su = su.length;
+																			res.ua = ua;
+																			res.area = area;
+																			callback(null,res);
+																		}
+																	});
+																}
+															});
+														}
+													});
+												}
+											});
+										}
+									});
+								}
+							});
+						}
+					);
+			      }
+		);
+		
+	});
 };
 
 

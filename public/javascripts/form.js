@@ -106,7 +106,7 @@ FormConstructor.prototype.start = function(data){
 		li.appendChild(this.lib.createElm("DIV",{innerHTML:inputelms[i].item.title}));
 		for ( var j = 0; j < inputelms[i].elms.length; j++) {
 			
-			inputelms[i].elms[j].name = datagroup+"["+inputelms[i].elms[j].name+"]"; 
+			//inputelms[i].elms[j].name = datagroup+"["+inputelms[i].elms[j].name+"]"; 
 			console.log(inputelms[i].elms[j]);
 			inputelms[i].elms[j].id = "id_"+i+"_"+j;
 			//add input element

@@ -110,7 +110,7 @@ app.get('/questionaireform', function(req, res){
 
 
 app.get('/analytics', function(req, res){
-	dataProvider.getAnalyticsResult(req.body,function(error, result){
+	dataProvider.getAnalyticsResult(req.body,req.query,function(error, result){
 		_lib.log(result,"analytics result");
 		res.render('analytics', {
 			title: 'analytics',
@@ -130,7 +130,7 @@ app.post('/submitsurvey', function(req, res){
 		res.redirect('/message?'+((result)?'signupdone':'signupfail'));
 	}
 	else {
-		res.redirect('/analytics');
+		res.redirect('/analytics?pid='+req.body.pid);
 	}
 	});
 });
