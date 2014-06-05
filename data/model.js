@@ -220,11 +220,18 @@ dataProvider.prototype.insertSurvey = function(data,req,callback) {
 dataProvider.prototype.getAnalyticsResult = function(reqdata, query, callback){
 	var db = this.db, col_survey = db.collection("survey"),col_log_access_survey = db.collection("log_access_survey"),res = {unreadmessage:[]};
 	var mapFunction = function() {
+		print("======= test start! =======");
+		printjson(this);
+		printjson(this.scopetest);
+		print("======= test end! =======");
 		for ( var k in this.inputdata) {
-			emit(k, {
-				count : 1,
-				data : this.inputdata[k]
-			});
+			//if(questionform[k] && ["radio","checkbox","select-one"].indexOf(questionform[k].elms.type) != -1){
+			if(k == "q3"){
+				emit(k, {
+					count : 1,
+					data : this.inputdata[k]
+				});
+			}
 		}
 	};
 	var reduceFunction = function(key, countObjVals) {
@@ -253,10 +260,75 @@ dataProvider.prototype.getAnalyticsResult = function(reqdata, query, callback){
 	db.collection("questionaireform").findOne({_id:lib.convertObjectId(query.pid),datatype:1},function(error,qf){
 		for ( var i = 0,questionform = {}; i < qf.input.length; i++) {
 			questionform[qf.input[i]._id] = qf.input[i];
-			
 		}
 		_lib.log(questionform,"questionform");
 		var reportsubject = [];
+		_lib.log(db,"db");
+		_lib.log(col_survey,"col_survey.runCommand");
+		col_survey.runCommand({
+            mapReduce: 'survey',
+            map: mapFunction,
+            reduce: reduceFunction,
+            out: { merge: 'result_test1', db: 'surveyg' },
+            query: { datatype : 1 },
+            scope: {scopetest:"test!!"}
+          },function(error,results,stats){
+        	   // stats provided by verbose
+				var mapFunction2 = function() {
+					emit(this._id, {count:this.value.count,data:this.value.data[0]});
+				};
+				var reduceFunction2 = function(key, data) {
+					return {key:key, data:data};
+				};
+				var res = {};
+				//get question report
+				db.collection("result_test1").mapReduce(mapFunction2, reduceFunction2, { out : "result_test2", query : {} },
+					function(error, results, stats){
+						db.collection("result_test2").find().toArray(function(error, results){
+							if(error){callback(error,false);}
+							else {
+								//PV : db.log_access_survey.find().count()
+								col_log_access_survey.find().count(function(error,pv){
+									if(error){callback(error,false);}
+									else {
+										//SU : db.survey.distinct('cookies.connect_sid')
+										col_survey.distinct('cookies.connect_sid',function(error, su){
+											if(error){callback(error,false);}
+											else {
+												//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
+												col_log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}},function(error,ua){
+													if(error){callback(error,false);}
+													else {
+														col_survey.distinct('cookies.connect_sid',function(error, su){
+															if(error){callback(error,false);}
+															else {
+																//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
+																col_survey.aggregate({$group:{_id:"$area.city",count:{$sum:1}}},function(error,area){
+																	if(error){callback(error,false);}
+																	else {
+																		res.inputdata = results;
+																		res.pv = pv;
+																		res.su = su.length;
+																		res.ua = ua;
+																		res.area = area;
+																		callback(null,res);
+																	}
+																});
+															}
+														});
+													}
+												});
+											}
+										});
+									}
+								});
+							}
+						});
+					}
+				);
+		      
+          });
+		/*
 		col_survey.mapReduce(mapFunction, reduceFunction, { out : "result_test1", query : { datatype : 1 } },
 			      function(error, results, stats) {   // stats provided by verbose
 					var mapFunction2 = function() {
@@ -313,7 +385,7 @@ dataProvider.prototype.getAnalyticsResult = function(reqdata, query, callback){
 					);
 			      }
 		);
-		
+		*/
 	});
 };
 
