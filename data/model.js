@@ -17,7 +17,7 @@ dataProvider = function(host, port) {
   this.db= new Db("surveyg", new Server(host, port, {safe: false}, {auto_reconnect: true}, {}));
   this.db.open(function(){});
 };
-
+/*
 dataProvider.prototype.getCollection_user= function(callback) {
   this.db.collection("user", function(error, mono_collection) {
     if( error ) callback(error);
@@ -38,6 +38,12 @@ dataProvider.prototype.getCollection_log_access_survey= function(callback) {
 	    else callback(null, mono_collection);
 	});
 };
+*/
+
+var mongojs = require('mongojs');
+var db2 = mongojs('surveyg', ['survey','log_access_survey','questionaireform','result_test1','result_test2']);
+
+
 
 //query validation
 var lib = {
@@ -121,26 +127,20 @@ dataProvider.prototype.getSurveyForm = function(req,callback) {
 	log.agent = require('useragent').parse(req.headers['user-agent']);
 	
 	log.created_at = new Date();
-	this.getCollection_log_access_survey(function(error, survey_collection) {
-		//TODO : password sha1,add created_at,required
-	      if( error ) callback(error);
-	      else {
-	    	  survey_collection.insert(log, function(error,results) {
-	    		  if(error){
-	    			  if(error){callback(error,false);}
-	    		  }
-	    		  else {
-	    			  //get questionaireform data to generate on page
-	    			  db.collection("questionaireform").findOne({_id:lib.convertObjectId(req.query.pid)},function(error,result){
-	    				  if(error){callback(error,false);}
-	    				  else {
-			    			  callback(null, result); 
-	    				  }
-		    		  }); 
-	    		  }
-	          });
-	      }
-	});
+	db2.log_access_survey.insert(log, function(error,results) {
+		  if(error){
+			  if(error){callback(error,false);}
+		  }
+		  else {
+			  //get questionaireform data to generate on page
+			  db2.questionaireform.findOne({_id:lib.convertObjectId(req.query.pid)},function(error,result){
+				  if(error){callback(error,false);}
+				  else {
+	    			  callback(null, result); 
+				  }
+    		  }); 
+		  }
+      });
 };
 
 //add new mono
@@ -202,36 +202,25 @@ dataProvider.prototype.insertSurvey = function(data,req,callback) {
 		insert_p.res.surveyinfo = data.surveyinfo;
 		insert_p.res.created_at = new Date();
 	}
-	this.getCollection_survey(function(error, survey_collection) {
-		//TODO : password sha1,add created_at,required
-	      if( error ) callback(error);
-	      else {
-	    	  survey_collection.insert(insert_p.res, function(error,results) {
-	    		  if(results){
-	    			  
-	    		  }
-	              callback(null, results);
-	          });
-	      }
-	});
+	
+	db2.survey.insert(insert_p.res, function(error,results) {
+		  if(error){ callback(error, false); }
+		  else { callback(null, results); }
+    });
 };
 
 //get analyticsresult
 dataProvider.prototype.getAnalyticsResult = function(reqdata, query, callback){
-	var db = this.db, col_survey = db.collection("survey"),col_log_access_survey = db.collection("log_access_survey"),res = {unreadmessage:[]};
 	var mapFunction = function() {
-		print("======= test start! =======");
-		printjson(this);
-		printjson(this.scopetest);
-		print("======= test end! =======");
 		for ( var k in this.inputdata) {
-			//if(questionform[k] && ["radio","checkbox","select-one"].indexOf(questionform[k].elms.type) != -1){
-			if(k == "q3"){
+			//set only selectable elements 
+			if(questionform[k] && ["radio","select-one","select-multi","checkbox"].indexOf(questionform[k].elms[0].type) != -1){
 				emit(k, {
 					count : 1,
 					data : this.inputdata[k]
 				});
 			}
+			//}
 		}
 	};
 	var reduceFunction = function(key, countObjVals) {
@@ -239,7 +228,112 @@ dataProvider.prototype.getAnalyticsResult = function(reqdata, query, callback){
 			count : 0,
 			data : {}
 		};
+		for ( var idx = 0; idx < countObjVals.length; idx++) {
+			reducedVal.count += countObjVals[idx].count;
+			for ( var k in countObjVals[idx].data) {
+				if (!reducedVal.data[k]) {
+					reducedVal.data[k] = {};
+				}
+				if (reducedVal.data[k][countObjVals[idx].data[k]]) {
+					reducedVal.data[k][countObjVals[idx].data[k]]++;
+				} else {
+					reducedVal.data[k][countObjVals[idx].data[k]] = 1;
+				}
+			}
+			// reducedVal.qty += countObjVals[idx].data;
+		}
+		return reducedVal;
+	};
+	db2.questionaireform.findOne({_id:lib.convertObjectId(query.pid),datatype:1},function(error,qf){
+		_lib.log(qf,"qqff");
+		for ( var i = 0,questionform = {}; i < qf.input.length; i++) {
+			questionform[qf.input[i]._id] = qf.input[i];
+		}
+		var reportsubject = [];
+		db2.survey.mapReduce(mapFunction, reduceFunction, { out : "result_test1", query : { datatype : 1 } ,scope: { KEYS: "KEYS2", questionform: questionform }},
+			      function(error, results, stats) {   // stats provided by verbose
+					_lib.log(results,"result_test1");
+					var mapFunction2 = function() {
+						emit(this._id, {count:this.value.count,data:this.value.data[0]});
+					};
+					var reduceFunction2 = function(key, data) {
+						return {key:key, data:data};
+					};
+					var res = {};
+					//get question report
+					db2.result_test1.mapReduce(mapFunction2, reduceFunction2, { out : "result_test2", query : {} },
+						function(error, results, stats){
+							db2.result_test2.find().toArray(function(error, results){
+								if(error){callback(error,false);}
+								else {
+									//PV : db.log_access_survey.find().count()
+									db2.log_access_survey.find().count(function(error,pv){
+										if(error){callback(error,false);}
+										else {
+											//SU : db.survey.distinct('cookies.connect_sid')
+											db2.survey.distinct('cookies.connect_sid',function(error, su){
+												if(error){callback(error,false);}
+												else {
+													//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
+													db2.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}},function(error,ua){
+														if(error){callback(error,false);}
+														else {
+															db2.survey.distinct('cookies.connect_sid',function(error, su){
+																if(error){callback(error,false);}
+																else {
+																	//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
+																	db2.survey.aggregate({$group:{_id:"$area.city",count:{$sum:1}}},function(error,area){
+																		if(error){callback(error,false);}
+																		else {
+																			res.inputdata = results;
+																			res.pv = pv;
+																			res.su = su.length;
+																			res.ua = ua;
+																			res.area = area;
+																			callback(null,res);
+																		}
+																	});
+																}
+															});
+														}
+													});
+												}
+											});
+										}
+									});
+								}
+							});
+						}
+					);
+			      }
+		);
+          
+          
+		
+	});
+};
 
+
+
+/*
+dataProvider.prototype.getAnalyticsResult = function(reqdata, query, callback){
+	var db = this.db, col_survey = db.collection("survey"),col_log_access_survey = db.collection("log_access_survey"),res = {unreadmessage:[]};
+	var mapFunction = function() {
+		print(this.inputdata);
+		for ( var k in this.inputdata) {
+			//if(k == "q3"){
+				emit(k, {
+					count : 1,
+					data : this.inputdata[k]
+				});
+			//}
+		}
+	};
+	var reduceFunction = function(key, countObjVals) {
+		reducedVal = {
+			count : 0,
+			data : {}
+		};
 		for ( var idx = 0; idx < countObjVals.length; idx++) {
 			reducedVal.count += countObjVals[idx].count;
 			for ( var k in countObjVals[idx].data) {
@@ -261,74 +355,7 @@ dataProvider.prototype.getAnalyticsResult = function(reqdata, query, callback){
 		for ( var i = 0,questionform = {}; i < qf.input.length; i++) {
 			questionform[qf.input[i]._id] = qf.input[i];
 		}
-		_lib.log(questionform,"questionform");
 		var reportsubject = [];
-		_lib.log(db,"db");
-		_lib.log(col_survey,"col_survey.runCommand");
-		col_survey.runCommand({
-            mapReduce: 'survey',
-            map: mapFunction,
-            reduce: reduceFunction,
-            out: { merge: 'result_test1', db: 'surveyg' },
-            query: { datatype : 1 },
-            scope: {scopetest:"test!!"}
-          },function(error,results,stats){
-        	   // stats provided by verbose
-				var mapFunction2 = function() {
-					emit(this._id, {count:this.value.count,data:this.value.data[0]});
-				};
-				var reduceFunction2 = function(key, data) {
-					return {key:key, data:data};
-				};
-				var res = {};
-				//get question report
-				db.collection("result_test1").mapReduce(mapFunction2, reduceFunction2, { out : "result_test2", query : {} },
-					function(error, results, stats){
-						db.collection("result_test2").find().toArray(function(error, results){
-							if(error){callback(error,false);}
-							else {
-								//PV : db.log_access_survey.find().count()
-								col_log_access_survey.find().count(function(error,pv){
-									if(error){callback(error,false);}
-									else {
-										//SU : db.survey.distinct('cookies.connect_sid')
-										col_survey.distinct('cookies.connect_sid',function(error, su){
-											if(error){callback(error,false);}
-											else {
-												//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
-												col_log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}},function(error,ua){
-													if(error){callback(error,false);}
-													else {
-														col_survey.distinct('cookies.connect_sid',function(error, su){
-															if(error){callback(error,false);}
-															else {
-																//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
-																col_survey.aggregate({$group:{_id:"$area.city",count:{$sum:1}}},function(error,area){
-																	if(error){callback(error,false);}
-																	else {
-																		res.inputdata = results;
-																		res.pv = pv;
-																		res.su = su.length;
-																		res.ua = ua;
-																		res.area = area;
-																		callback(null,res);
-																	}
-																});
-															}
-														});
-													}
-												});
-											}
-										});
-									}
-								});
-							}
-						});
-					}
-				);
-		      
-          });
-		/*
 		col_survey.mapReduce(mapFunction, reduceFunction, { out : "result_test1", query : { datatype : 1 } },
 			      function(error, results, stats) {   // stats provided by verbose
 					var mapFunction2 = function() {
@@ -385,9 +412,13 @@ dataProvider.prototype.getAnalyticsResult = function(reqdata, query, callback){
 					);
 			      }
 		);
-		*/
+          
+          
+		
 	});
 };
+*/
+
 
 
 
