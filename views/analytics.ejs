@@ -8,7 +8,7 @@
   </head>
   <body>
   <%- include header.ejs %>
-  	<div style="display:none;"><%-JSON.stringify(data)%></div>
+  	<div><%-JSON.stringify(data)%></div>
     <script>inputdata = <%-JSON.stringify(data.inputdata)%> </script>
     <script>useragent = <%-JSON.stringify(data.ua)%> </script>
     <script>area = <%-JSON.stringify(data.area)%> </script>
@@ -16,8 +16,7 @@
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
 
-<div>PV : <%=data.pv%></div>
-<div>SU : <%=data.su%></div>
+<div><h3>PV : <%=data.pv%>, SU : <%=data.su%></h3></div>
 <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
 <script>

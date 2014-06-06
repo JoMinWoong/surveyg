@@ -105,12 +105,22 @@ app.get('/questionaireform', function(req, res){
 	});
 });
 
-
-
+//individualresult
+app.get('/individualreport', function(req, res){
+	dataProvider.getIndividualReport(req.body,req.query,function(error, result){
+		_lib.log(result,"individualreport result");
+		res.render('individualreport', {
+			title: 'individualreport',
+			session: req.session,
+			_jsdata: jsdata.data,
+			data: result
+		});	
+	});
+});
 
 
 app.get('/analytics', function(req, res){
-	dataProvider.getAnalyticsResult(req.body,req.query,function(error, result){
+	dataProvider.getAnalyticsReport(req.body,req.query,function(error, result){
 		_lib.log(result,"analytics result");
 		res.render('analytics', {
 			title: 'analytics',

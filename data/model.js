@@ -86,6 +86,13 @@ var lib = {
 		}
 		return insert_p;
 	},
+	questionaireform_convert:function(questionform){
+		for ( var i = 0,result = {}; i < questionform.input.length; i++) {
+			result[questionform.input[i]._id] = questionform.input[i];
+		}
+		_lib.log(result,"questionaireform_convert");
+		return result;
+	},
 	convertObjectId:function(p){
 		try {
 			return require("mongodb").ObjectID(""+p);
@@ -209,8 +216,20 @@ dataProvider.prototype.insertSurvey = function(data,req,callback) {
     });
 };
 
+//get individual survey report
+dataProvider.prototype.getIndividualReport = function(reqdata, query, callback){
+	db2.survey.find({pid:query.pid,datatype:1}).sort({created_at:-1}).toArray(function(error,survey){
+		if(error){ callback(error, false); }
+		else {
+			db2.questionaireform.findOne({_id:lib.convertObjectId(query.pid)},function(error,questionaireform){
+				if(error){ callback(error, false); }
+				else { callback (null, {survey:survey,questionaireform:lib.questionaireform_convert(questionaireform)} );}
+			});
+		}
+	});
+};
 //get analyticsresult
-dataProvider.prototype.getAnalyticsResult = function(reqdata, query, callback){
+dataProvider.prototype.getAnalyticsReport = function(reqdata, query, callback){
 	var mapFunction = function() {
 		for ( var k in this.inputdata) {
 			//set only selectable elements 
@@ -224,6 +243,7 @@ dataProvider.prototype.getAnalyticsResult = function(reqdata, query, callback){
 		}
 	};
 	var reduceFunction = function(key, countObjVals) {
+		print("key >>> "+key);
 		reducedVal = {
 			count : 0,
 			data : {}
@@ -245,12 +265,11 @@ dataProvider.prototype.getAnalyticsResult = function(reqdata, query, callback){
 		return reducedVal;
 	};
 	db2.questionaireform.findOne({_id:lib.convertObjectId(query.pid),datatype:1},function(error,qf){
-		_lib.log(qf,"qqff");
-		for ( var i = 0,questionform = {}; i < qf.input.length; i++) {
-			questionform[qf.input[i]._id] = qf.input[i];
-		}
-		var reportsubject = [];
-		db2.survey.mapReduce(mapFunction, reduceFunction, { out : "result_test1", query : { datatype : 1 } ,scope: { KEYS: "KEYS2", questionform: questionform }},
+		
+		//questionaireform convert [_id , ...] => {_id:{ ... }}
+		var questionform = lib.questionaireform_convert(qf), res = {questionform:questionform};
+		
+		db2.survey.mapReduce(mapFunction, reduceFunction, { out : "result_test1", query : { datatype : 1 } ,scope: { questionform: questionform }},
 			      function(error, results, stats) {   // stats provided by verbose
 					_lib.log(results,"result_test1");
 					var mapFunction2 = function() {
@@ -259,11 +278,11 @@ dataProvider.prototype.getAnalyticsResult = function(reqdata, query, callback){
 					var reduceFunction2 = function(key, data) {
 						return {key:key, data:data};
 					};
-					var res = {};
 					//get question report
 					db2.result_test1.mapReduce(mapFunction2, reduceFunction2, { out : "result_test2", query : {} },
 						function(error, results, stats){
-							db2.result_test2.find().toArray(function(error, results){
+							db2.result_test2.find().toArray(function(error, inputdata){
+								res.inputdata = inputdata;
 								if(error){callback(error,false);}
 								else {
 									//PV : db.log_access_survey.find().count()
@@ -285,7 +304,6 @@ dataProvider.prototype.getAnalyticsResult = function(reqdata, query, callback){
 																	db2.survey.aggregate({$group:{_id:"$area.city",count:{$sum:1}}},function(error,area){
 																		if(error){callback(error,false);}
 																		else {
-																			res.inputdata = results;
 																			res.pv = pv;
 																			res.su = su.length;
 																			res.ua = ua;
