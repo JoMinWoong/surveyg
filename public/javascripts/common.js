@@ -65,7 +65,7 @@ var _conf = {
 	isPC:'ontouchstart' in document.documentElement
 };
 var func = {
-	barChart : function(id,d){
+	barChart : function(id,d){ return false;
 		// For horizontal bar charts, x an y values must will be "flipped"
 	    // from their vertical bar counterpart.
         //[[2,1], [4,2], [6,3], [3,4]], 
@@ -92,37 +92,5 @@ var func = {
 	            }
 	        }
 	    });
-	},
-	barChart_g : function(id,d){
-		google.load("visualization", "1", {packages:["corechart"]});
-	    google.setOnLoadCallback(drawChart);
-	    function drawChart() {
-//	    	[
-//	 		["Element", "Density", { role: "style" } ],
-//	 	    ["Copper", 8.94, "#b87333"],
-//	 		["Silver", 10.49, "silver"],
-//	 		["Gold", 19.30, "gold"],
-//	 		["Platinum", 21.45, "color: #e5e4e2"]
-//	 	      ]
-	      var data = google.visualization.arrayToDataTable(d.data);
-
-	      var view = new google.visualization.DataView(data);
-	      view.setColumns([0, 1,
-	                       { calc: "stringify",
-	                         sourceColumn: 1,
-	                         type: "string",
-	                         role: "annotation" },
-	                       2]);
-
-	      var options = {
-		title: d.title,
-		width: 600,
-		height: 400,
-		bar: {groupWidth: "95%"},
-	        legend: { position: "none" },
-	      };
-	      var chart = new google.visualization.BarChart(document.getElementById("barchart_values"));
-	      chart.draw(view, options);
-	  }
 	}
 }

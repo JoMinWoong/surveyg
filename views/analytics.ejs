@@ -4,58 +4,31 @@
     <title><%= title %></title>
     <%- include head.ejs %>
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
-   
+   	<script>_inputdata = <%-JSON.stringify(data.inputdata)%> </script>
+    <script>_useragent = <%-JSON.stringify(data.ua)%> </script>
+    <script>_questionform = <%-JSON.stringify(data.questionform)%> </script>
+    <script>_area = <%-JSON.stringify(data.area)%> </script>
    
   </head>
   <body>
   <%- include header.ejs %><div><%-JSON.stringify(data)%></div><br><br>
-  
-      <script>inputdata = <%-JSON.stringify(data.inputdata)%> </script>
-    <script>useragent = <%-JSON.stringify(data.ua)%> </script>
-    <script>questionform = <%-JSON.stringify(data.questionform)%> </script>
-    <script>area = <%-JSON.stringify(data.area)%> </script>
-  
    <ul id="selectablequestiondata_g" style="width: 900px; height: 300px;"></ul><br><br><br><br><br><br><br><br>
-  <script>
-  
-  for ( var i = 0,sq = document.getElementById("selectablequestiondata_g"); i < inputdata.length; i++) {
-	var eachinputdata = inputdata[i],bc_div_id = "bc_div_"+i,div = sq.appendChild(_lib.createElm("div", {id:bc_div_id})),p = {};
-	p.title = questionform[eachinputdata._id].item.title;
-	console.log(questionform[eachinputdata._id]);
-	console.log(eachinputdata);
-	p.data = [];
-//	[
-//		["Element", "Density", { role: "style" } ],
-//	    ["Copper", 8.94, "#b87333"],
-//		["Silver", 10.49, "silver"],
-//		["Gold", 19.30, "gold"],
-//		["Platinum", 21.45, "color: #e5e4e2"]
-//	      ]	
-	for ( var k in eachinputdata.value.data) {
-		p.data.push([eachinputdata.value.data[k]])
-	}
-	//func.barChart_g(bc_div_id,plot);
-}
-  
-  </script>
-  	
-
-  
+	<div id="barchart_values" style="width: 900px; height: 300px;"></div>
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
 
-<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div id="container" style="min-width: 310px; height: 400px;display:none; margin: 0 auto">
 
 
 
 <script>
 
 $(function () {
-		for ( var i = 0,xAxis = [],tmp = {a:{ name: "a", data: [], stack: 'stack_a' },b:{ name: "b", data: [], stack: 'stack_b' }},series=[tmp.a,tmp.b]; i < inputdata.length; i++) {
-			xAxis.push(inputdata[i]._id);
-			for ( var k in inputdata[i].value.data) {
+		for ( var i = 0,xAxis = [],tmp = {a:{ name: "a", data: [], stack: 'stack_a' },b:{ name: "b", data: [], stack: 'stack_b' }},series=[tmp.a,tmp.b]; i < _inputdata.length; i++) {
+			xAxis.push(_inputdata[i]._id);
+			for ( var k in _inputdata[i].value.data) {
 				if(tmp[k]){
-					tmp[k].data.push(inputdata[i].value.data[k]);
+					tmp[k].data.push(_inputdata[i].value.data[k]);
 				}
 			}
 		}
@@ -159,10 +132,10 @@ $(function () {
             name: 'Browser share',
             data: 
             (function(){
-            	for ( var i = 0,res=[]; i < useragent.length; i++) {
+            	for ( var i = 0,res=[]; i < _useragent.length; i++) {
 					var line = [];
-					line.push(useragent[i]._id);
-					line.push(useragent[i].count);
+					line.push(_useragent[i]._id);
+					line.push(_useragent[i].count);
 					res.push(line);
 				}
             	return res;
@@ -207,10 +180,10 @@ $(function () {
             name: 'area share',
             data: 
             (function(){
-            	for ( var i = 0,res=[]; i < area.length; i++) {
+            	for ( var i = 0,res=[]; i < _area.length; i++) {
 					var line = [];
-					line.push(area[i]._id);
-					line.push(area[i].count);
+					line.push(_area[i]._id);
+					line.push(_area[i].count);
 					res.push(line);
 				}
             	return res;
@@ -219,32 +192,7 @@ $(function () {
     });
 });
 </script>
-
-
-
-
-<script src="javascripts/jquery.jqplot.js"></script>
-<script src="javascripts/jqlot/plugins/jqplot.barRenderer.js"></script>
-<script src="javascripts/jqlot/plugins/jqplot.categoryAxisRenderer.min.js"></script>
-<script src="javascripts/jqlot/plugins/jqplot.pointLabels.min.js"></script>
-
-
-<link rel='stylesheet' href='/stylesheets/jquery.jqplot.css' />
-
-<div><h3>PV : <%=data.pv%>, SU : <%=data.su%></h3></div>
-<div> <%- JSON.stringify(data.inputdata) %></div>
-<a href="file:///Users/yesseyall/Downloads/dist%202/examples/bar-charts.html" target="_new">local</a>
-<ul id="selectablequestiondata" style="width: 400px; height: 300px; position: relative;" class="jqplot-target"></ul>
-<script>
-for ( var i = 0,sq = document.getElementById("selectablequestiondata"); i < inputdata.length; i++) {
-	var eachinputdata = inputdata[i],bc_div_id = "bc_div_"+i,div = sq.appendChild(_lib.createElm("div", {id:bc_div_id})),plot=[];
-	for ( var k in eachinputdata.value.data) {
-		plot.push([[eachinputdata.value.data[k],1]])
-	}
-	
-	func.barChart(bc_div_id,plot);
-}
-
-</script>
-  </body>
+</div>
+<script type="text/javascript" src="/javascripts/analytics.js"></script>
+</body>
 </html>
