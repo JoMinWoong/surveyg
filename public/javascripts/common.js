@@ -25,22 +25,104 @@ var _doc = document,_lib = {
 	},
 	isNumber: function(p) {
 	    return typeof p === 'number' && isFinite(p);
-	}
-},
-_com = {
-	setState:function(p,dis){
-		var sta = _doc.getElementById("state"),sta_tt = _doc.getElementById("title_state");
-		if(!sta)return;
-		//set hidden statevalue
-		sta.value = p;
-		sta_tt.innerHTML = (!p)?"state":dis.innerHTML; 
-		
 	},
-	setCategory:function(p,dis){
-		var sta = _doc.getElementById("category"),sta_tt = _doc.getElementById("title_category");
-		if(!sta)return;
-		//set hidden statevalue
-		sta.value = p;
-		sta_tt.innerHTML = (!p)?"category":dis.innerHTML; 
+    createElm: function(t, p, f) {
+        var e = _doc.createElement(t + ""), k, ek, i;
+        for (k in p) {
+            if (k == "appendChild") {
+                if ("function" == typeof p[k]) {
+                    e.appendChild(p[k]());
+                } else if (p[k] instanceof Array) {
+                    for (i = 0; i < p[k].length; i++) {
+                        e.appendChild(p[k][i]);
+                    }
+                } else
+                    e.appendChild(p[k]);
+            } else if (k == "css") {
+                for (var ck in p[k]) {
+                    e.style[ck] = p[k][ck];
+                }
+            } else if (k == "cssText") {
+                e.style.cssText += " ;" + p[k] + ";";
+            } else {
+                if (!_conf.isPC) {
+                    if (k == "onmouseup")
+                        ek = "ontouchend";
+                    else if (k == "onmousedown")
+                        ek = "ontouchstart";
+                    else
+                        ek = k;
+                    e[ek] = p[k];
+                } else
+                    e[k] = p[k];
+            }
+        }
+        if (f) e.className += " NC_spc_noconv";
+        return e;
+    }
+};
+var _conf = {
+	isPC:'ontouchstart' in document.documentElement
+};
+var func = {
+	barChart : function(id,d){
+		// For horizontal bar charts, x an y values must will be "flipped"
+	    // from their vertical bar counterpart.
+        //[[2,1], [4,2], [6,3], [3,4]], 
+        //[[5,1], [1,2], [3,3], [4,4]], 
+        //[[4,1], [7,2], [1,3], [2,4]]
+	    var plot2 = $.jqplot(id, d, {
+	        seriesDefaults: {
+	            renderer:$.jqplot.BarRenderer,
+	            // Show point labels to the right ('e'ast) of each bar.
+	            // edgeTolerance of -15 allows labels flow outside the grid
+	            // up to 15 pixels.  If they flow out more than that, they 
+	            // will be hidden.
+	            pointLabels: { show: true, location: 'e', edgeTolerance: -15 },
+	            // Rotate the bar shadow as if bar is lit from top right.
+	            shadowAngle: 135,
+	            // Here's where we tell the chart it is oriented horizontally.
+	            rendererOptions: {
+	                barDirection: 'horizontal'
+	            }
+	        },
+	        axes: {
+	            yaxis: {
+	                renderer: $.jqplot.CategoryAxisRenderer
+	            }
+	        }
+	    });
+	},
+	barChart_g : function(id,d){
+		google.load("visualization", "1", {packages:["corechart"]});
+	    google.setOnLoadCallback(drawChart);
+	    function drawChart() {
+//	    	[
+//	 		["Element", "Density", { role: "style" } ],
+//	 	    ["Copper", 8.94, "#b87333"],
+//	 		["Silver", 10.49, "silver"],
+//	 		["Gold", 19.30, "gold"],
+//	 		["Platinum", 21.45, "color: #e5e4e2"]
+//	 	      ]
+	      var data = google.visualization.arrayToDataTable(d.data);
+
+	      var view = new google.visualization.DataView(data);
+	      view.setColumns([0, 1,
+	                       { calc: "stringify",
+	                         sourceColumn: 1,
+	                         type: "string",
+	                         role: "annotation" },
+	                       2]);
+
+	      var options = {
+		title: d.title,
+		width: 600,
+		height: 400,
+		bar: {groupWidth: "95%"},
+	        legend: { position: "none" },
+	      };
+	      var chart = new google.visualization.BarChart(document.getElementById("barchart_values"));
+	      chart.draw(view, options);
+	  }
 	}
-} 
+}
