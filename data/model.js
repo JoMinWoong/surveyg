@@ -248,9 +248,14 @@ dataProvider.prototype.getAnalyticsReport = function(reqdata, query, callback){
 			count : 0,
 			data : {}
 		};
-		for ( var idx = 0; idx < countObjVals.length; idx++) {
+		for ( var idx = 0,key=""; idx < countObjVals.length; idx++) {
 			reducedVal.count += countObjVals[idx].count;
+			
+			
 			for ( var k in countObjVals[idx].data) {
+				print("k >>> "+k);
+				print("countObjVals[idx].data >>> "+countObjVals[idx].data);
+				
 				if (!reducedVal.data[k]) {
 					reducedVal.data[k] = {};
 				}
@@ -259,7 +264,10 @@ dataProvider.prototype.getAnalyticsReport = function(reqdata, query, callback){
 				} else {
 					reducedVal.data[k][countObjVals[idx].data[k]] = 1;
 				}
+				
+				//printjson(reducedVal.data);
 			}
+			
 			// reducedVal.qty += countObjVals[idx].data;
 		}
 		return reducedVal;
