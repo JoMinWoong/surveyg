@@ -17,28 +17,6 @@ dataProvider = function(host, port) {
   this.db= new Db("surveyg", new Server(host, port, {safe: false}, {auto_reconnect: true}, {}));
   this.db.open(function(){});
 };
-/*
-dataProvider.prototype.getCollection_user= function(callback) {
-  this.db.collection("user", function(error, mono_collection) {
-    if( error ) callback(error);
-    else callback(null, mono_collection);
-  });
-};
-
-dataProvider.prototype.getCollection_survey= function(callback) {
-  this.db.collection("survey", function(error, mono_collection) {
-    if( error ) callback(error);
-    else callback(null, mono_collection);
-  });
-};
-
-dataProvider.prototype.getCollection_log_access_survey= function(callback) {
-	this.db.collection("log_access_survey", function(error, mono_collection) {
-		if( error ) callback(error);
-	    else callback(null, mono_collection);
-	});
-};
-*/
 
 var mongojs = require('mongojs');
 var db2 = mongojs('surveyg', ['survey','log_access_survey','questionaireform','result_test1','result_test2']);
@@ -243,32 +221,21 @@ dataProvider.prototype.getAnalyticsReport = function(reqdata, query, callback){
 		}
 	};
 	var reduceFunction = function(key, countObjVals) {
-		print("key >>> "+key);
-		reducedVal = {
+		printjson(countObjVals);
+		var reducedVal = {
 			count : 0,
 			data : {}
 		};
-		for ( var idx = 0,key=""; idx < countObjVals.length; idx++) {
+		
+		for ( var idx = 0; idx < countObjVals.length; idx++) {
+			
 			reducedVal.count += countObjVals[idx].count;
-			
-			
-			for ( var k in countObjVals[idx].data) {
-				print("k >>> "+k);
-				print("countObjVals[idx].data >>> "+countObjVals[idx].data);
-				
-				if (!reducedVal.data[k]) {
-					reducedVal.data[k] = {};
-				}
-				if (reducedVal.data[k][countObjVals[idx].data[k]]) {
-					reducedVal.data[k][countObjVals[idx].data[k]]++;
-				} else {
-					reducedVal.data[k][countObjVals[idx].data[k]] = 1;
-				}
-				
-				//printjson(reducedVal.data);
+			var vk = countObjVals[idx].data;
+			if (reducedVal.data[vk]) {
+				reducedVal.data[vk]++;
+			} else {
+				reducedVal.data[vk] = 1;
 			}
-			
-			// reducedVal.qty += countObjVals[idx].data;
 		}
 		return reducedVal;
 	};
@@ -277,48 +244,36 @@ dataProvider.prototype.getAnalyticsReport = function(reqdata, query, callback){
 		//questionaireform convert [_id , ...] => {_id:{ ... }}
 		var questionform = lib.questionaireform_convert(qf), res = {questionform:questionform};
 		
-		db2.survey.mapReduce(mapFunction, reduceFunction, { out : "result_test1", query : { datatype : 1 } ,scope: { questionform: questionform }},
+		db2.survey.mapReduce(mapFunction, reduceFunction, { out : "result_test1", query : { datatype : 1,pid:query.pid } ,scope: { questionform: questionform }},
 			      function(error, results, stats) {   // stats provided by verbose
-					_lib.log(results,"result_test1");
-					var mapFunction2 = function() {
-						emit(this._id, {count:this.value.count,data:this.value.data[0]});
-					};
-					var reduceFunction2 = function(key, data) {
-						return {key:key, data:data};
-					};
-					//get question report
-					db2.result_test1.mapReduce(mapFunction2, reduceFunction2, { out : "result_test2", query : {} },
-						function(error, results, stats){
-							db2.result_test2.find().toArray(function(error, inputdata){
-								res.inputdata = inputdata;
+					db2.result_test1.find().toArray(function(error, inputdata){
+						if(error){callback(error,false);}
+						else {
+							//PV : db.log_access_survey.find().count()
+							db2.log_access_survey.find().count(function(error,pv){
 								if(error){callback(error,false);}
 								else {
-									//PV : db.log_access_survey.find().count()
-									db2.log_access_survey.find().count(function(error,pv){
+									//SU : db.survey.distinct('cookies.connect_sid')
+									db2.survey.distinct('cookies.connect_sid',function(error, su){
 										if(error){callback(error,false);}
 										else {
-											//SU : db.survey.distinct('cookies.connect_sid')
-											db2.survey.distinct('cookies.connect_sid',function(error, su){
+											//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
+											db2.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}},function(error,ua){
 												if(error){callback(error,false);}
 												else {
-													//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
-													db2.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}},function(error,ua){
+													db2.survey.distinct('cookies.connect_sid',function(error, su){
 														if(error){callback(error,false);}
 														else {
-															db2.survey.distinct('cookies.connect_sid',function(error, su){
+															//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
+															db2.survey.aggregate({$group:{_id:"$area.city",count:{$sum:1}}},function(error,area){
 																if(error){callback(error,false);}
 																else {
-																	//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
-																	db2.survey.aggregate({$group:{_id:"$area.city",count:{$sum:1}}},function(error,area){
-																		if(error){callback(error,false);}
-																		else {
-																			res.pv = pv;
-																			res.su = su.length;
-																			res.ua = ua;
-																			res.area = area;
-																			callback(null,res);
-																		}
-																	});
+																	res.inputdata = inputdata;
+																	res.pv = pv;
+																	res.su = su.length;
+																	res.ua = ua;
+																	res.area = area;
+																	callback(null,res);
 																}
 															});
 														}
@@ -330,7 +285,7 @@ dataProvider.prototype.getAnalyticsReport = function(reqdata, query, callback){
 								}
 							});
 						}
-					);
+					});
 			      }
 		);
           
@@ -338,115 +293,6 @@ dataProvider.prototype.getAnalyticsReport = function(reqdata, query, callback){
 		
 	});
 };
-
-
-
-/*
-dataProvider.prototype.getAnalyticsResult = function(reqdata, query, callback){
-	var db = this.db, col_survey = db.collection("survey"),col_log_access_survey = db.collection("log_access_survey"),res = {unreadmessage:[]};
-	var mapFunction = function() {
-		print(this.inputdata);
-		for ( var k in this.inputdata) {
-			//if(k == "q3"){
-				emit(k, {
-					count : 1,
-					data : this.inputdata[k]
-				});
-			//}
-		}
-	};
-	var reduceFunction = function(key, countObjVals) {
-		reducedVal = {
-			count : 0,
-			data : {}
-		};
-		for ( var idx = 0; idx < countObjVals.length; idx++) {
-			reducedVal.count += countObjVals[idx].count;
-			for ( var k in countObjVals[idx].data) {
-				if (!reducedVal.data[k]) {
-					reducedVal.data[k] = {};
-				}
-				if (reducedVal.data[k][countObjVals[idx].data[k]]) {
-					reducedVal.data[k][countObjVals[idx].data[k]]++;
-				} else {
-					reducedVal.data[k][countObjVals[idx].data[k]] = 1;
-				}
-			}
-			// reducedVal.qty += countObjVals[idx].data;
-		}
-		printjson(reducedVal);
-		return reducedVal;
-	};
-	db.collection("questionaireform").findOne({_id:lib.convertObjectId(query.pid),datatype:1},function(error,qf){
-		for ( var i = 0,questionform = {}; i < qf.input.length; i++) {
-			questionform[qf.input[i]._id] = qf.input[i];
-		}
-		var reportsubject = [];
-		col_survey.mapReduce(mapFunction, reduceFunction, { out : "result_test1", query : { datatype : 1 } },
-			      function(error, results, stats) {   // stats provided by verbose
-					var mapFunction2 = function() {
-						emit(this._id, {count:this.value.count,data:this.value.data[0]});
-					};
-					var reduceFunction2 = function(key, data) {
-						return {key:key, data:data};
-					};
-					var res = {};
-					//get question report
-					db.collection("result_test1").mapReduce(mapFunction2, reduceFunction2, { out : "result_test2", query : {} },
-						function(error, results, stats){
-							db.collection("result_test2").find().toArray(function(error, results){
-								if(error){callback(error,false);}
-								else {
-									//PV : db.log_access_survey.find().count()
-									col_log_access_survey.find().count(function(error,pv){
-										if(error){callback(error,false);}
-										else {
-											//SU : db.survey.distinct('cookies.connect_sid')
-											col_survey.distinct('cookies.connect_sid',function(error, su){
-												if(error){callback(error,false);}
-												else {
-													//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
-													col_log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}},function(error,ua){
-														if(error){callback(error,false);}
-														else {
-															col_survey.distinct('cookies.connect_sid',function(error, su){
-																if(error){callback(error,false);}
-																else {
-																	//TODO useragent : db.log_access_survey.aggregate({$group:{_id:"$agent.family",count:{$sum:1}}})
-																	col_survey.aggregate({$group:{_id:"$area.city",count:{$sum:1}}},function(error,area){
-																		if(error){callback(error,false);}
-																		else {
-																			res.inputdata = results;
-																			res.pv = pv;
-																			res.su = su.length;
-																			res.ua = ua;
-																			res.area = area;
-																			callback(null,res);
-																		}
-																	});
-																}
-															});
-														}
-													});
-												}
-											});
-										}
-									});
-								}
-							});
-						}
-					);
-			      }
-		);
-          
-          
-		
-	});
-};
-*/
-
-
-
 
 //TODO del
 //find random mono
