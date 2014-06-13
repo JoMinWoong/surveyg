@@ -96,7 +96,11 @@ app.get('/questionaireform', function(req, res){
 			});
 		}
 		else {
-			res.render('questionaireform', {
+			var formtype = "";
+			if(result.formtype) {
+				formtype = "_"+result.formtype;
+			}
+			res.render('questionaireform' + formtype, {
 				title: 'Top',
 				data:result,
 				session: req.session

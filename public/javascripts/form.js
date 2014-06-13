@@ -99,6 +99,7 @@ var FormConstructor = function (){
 	};
 };
 FormConstructor.prototype.start = function(data){
+	/*
 	var content = document.getElementById("content"),inputelms = data.input,ol = document.createElement("ol"),datagroup = data.datagroup;
 	for ( var i = 0; i < inputelms.length; i++) {
 		var li = document.createElement("li");
@@ -128,7 +129,7 @@ FormConstructor.prototype.start = function(data){
 		ol.appendChild(li);
 	}
 	content.appendChild(ol);
-	
+	*/
 }
 var formConstructor = new FormConstructor();
 formConstructor.start(data);

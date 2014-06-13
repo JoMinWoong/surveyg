@@ -19,7 +19,7 @@ dataProvider = function(host, port) {
 };
 
 var mongojs = require('mongojs');
-var db2 = mongojs('surveyg', ['survey','log_access_survey','questionaireform','result_test1','result_test2']);
+var db2 = mongojs('surveyg', ['survey','log_access_survey','questionaireform','result_test1']);
 
 
 
