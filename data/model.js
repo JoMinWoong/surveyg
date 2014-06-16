@@ -201,7 +201,9 @@ dataProvider.prototype.getIndividualReport = function(reqdata, query, callback){
 		else {
 			db2.questionaireform.findOne({_id:lib.convertObjectId(query.pid)},function(error,questionaireform){
 				if(error){ callback(error, false); }
-				else { callback (null, {survey:survey,questionaireform:lib.questionaireform_convert(questionaireform)} );}
+				else {
+					callback (null, {survey:survey,questionaireform:lib.questionaireform_convert(questionaireform)} );
+				}
 			});
 		}
 	});
@@ -268,12 +270,46 @@ dataProvider.prototype.getAnalyticsReport = function(reqdata, query, callback){
 															db2.survey.aggregate({$group:{_id:"$area.city",count:{$sum:1}}},function(error,area){
 																if(error){callback(error,false);}
 																else {
-																	res.inputdata = inputdata;
-																	res.pv = pv;
-																	res.su = su.length;
-																	res.ua = ua;
-																	res.area = area;
-																	callback(null,res);
+																	
+																	db2.survey.aggregate({
+																		$project : {
+																			year : {
+																				$year : "$created_at"
+																			},
+																			month : {
+																				$month : "$created_at"
+																			},
+																			day : {
+																				$dayOfMonth : "$created_at"
+																			},
+																			created_at:"$created_at"
+																		}
+																	}
+																	,{
+																		$match: {created_at : { $gte: (function(){var nd = new Date(); return nd.addDays(-30); /*return new Date("2013-01-01T00:00:00.0Z");*/})(), $lt: new Date() }}
+																	}
+																	,{
+																		$group : {
+																			_id :
+																			{
+																				year : "$year",
+																				month : "$month",
+																				day : "$day"
+																			},
+																			count : {
+																				$sum : 1
+																			}
+																		}
+																	},function(error,datecount){
+																		//_lib.log(counts,"counts");
+																		res.inputdata = inputdata;
+																		res.pv = pv;
+																		res.su = su.length;
+																		res.ua = ua;
+																		res.area = area;
+																		res.datecount = datecount;
+																		callback(null,res);
+																	})
 																}
 															});
 														}

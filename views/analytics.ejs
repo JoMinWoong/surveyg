@@ -8,11 +8,13 @@
     <script>_useragent = <%-JSON.stringify(data.ua)%> </script>
     <script>_questionform = <%-JSON.stringify(data.questionform)%> </script>
     <script>_area = <%-JSON.stringify(data.area)%> </script>
+    <script>_datecount = <%-JSON.stringify(data.datecount)%> </script>
    
   </head>
   <body>
   <%- include header.ejs %><div><%-JSON.stringify(data)%></div><br><br>
    	<div><h3>PV : <%=data.pv%>, SU : <%=data.su%></h3></div>
+   	<div id="areachart_datecount" style="width: 900px;"></div>
 	<div id="barchart_values" style="width: 900px;"></div>
 	<div id="piechart_useragent" style="width: 900px;"></div>
 	<div id="piechart_area" style="width: 900px;"></div>

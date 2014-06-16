@@ -19,13 +19,15 @@ $Analytics = function(){
 }
 $Analytics.prototype = {
 	convertdata : {
+		areaChart_datecount_g : function(){
+			
+			new_analytics.data.graph.areaChart_datecount_g = [1];
+		},
 		pieChart_area_g : function(){
 			var res = {data:[['Task', 'Hours per Day']], title:"area"};
 			for ( var i = 0; i < _area.length; i++) {
-				console.log(_area[i]._id + "," + _area[i].count);
 				res.data.push([(_area[i]._id || "undefined area"), _area[i].count])
 			}
-			console.log(res);
 			new_analytics.data.graph.pieChart_area_g = [res];
 		},
 		pieChart_useragent_g : function(){
@@ -34,7 +36,6 @@ $Analytics.prototype = {
 				console.log(_useragent[i]._id + "," + _useragent[i].count);
 				res.data.push([_useragent[i]._id, _useragent[i].count])
 			}
-			console.log(res);
 			new_analytics.data.graph.pieChart_useragent_g = [res];
 			
 		},
@@ -64,6 +65,40 @@ $Analytics.prototype = {
 		}
 	},
 	graph : {
+		areaChart_datecount_g : function(d,index){
+			google.load("visualization", "1", {packages:["corechart"]});
+		    google.setOnLoadCallback(drawChart);
+		    function drawChart() {
+		    	for ( var i = 0,datecountdata = []; i < _datecount.length; i++) {
+					
+					datecountdata.push([
+					                    _datecount[i]._id.year+"/"+_datecount[i]._id.month+"/"+_datecount[i]._id.day,
+					                    _datecount[i].count,_datecount[i].count + Math.round(Math.random() * 20)]);
+				}
+		    	datecountdata.push(['Date', '返答数', 'PV(TODO)']);
+		    	//console.log(datecountdata.reverse());
+		    	var data = google.visualization.arrayToDataTable(datecountdata.reverse()
+		    			/*
+						[
+	                      ['Date', 'count'],
+	                      ['2013',  1000],
+	                      ['2014',  1170],
+	                      ['2015',  660],
+	                      ['2016',  1030]
+	                    ]
+						*/
+						);
+
+	                    var options = {
+	                      title: 'Day count',
+	                      hAxis: {title: 'YMD',  titleTextStyle: {color: '#333'}},
+	                      vAxis: {minValue: 0}
+	                    };
+
+	                    var chart = new google.visualization.AreaChart(document.getElementById('areachart_datecount'));
+	                    chart.draw(data, options);
+		    }
+		},
 		pieChart_area_g : function(d,index){
 			google.load("visualization", "1", {packages:["corechart"]});
 		      google.setOnLoadCallback(drawChart);
