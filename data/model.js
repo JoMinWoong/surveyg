@@ -14,7 +14,7 @@ var Db = require("mongodb").Db,
 	jsdata = require("./jsdata"),
 	com = require("../lib/common"),_lib = com.lib,geoip = require('geoip-lite'),
 dataProvider = function(host, port) {
-  this.db= new Db("surveyg", new Server(host, port, {safe: false}, {auto_reconnect: true}, {}));
+  this.db= new Db("test", new Server(host, port, {safe: false}, {auto_reconnect: true}, {}));
   this.db.open(function(){});
 };
 
@@ -65,10 +65,12 @@ var lib = {
 		return insert_p;
 	},
 	questionaireform_convert:function(questionform){
+		if(!questionform) return {};
+		_lib.log(questionform,"questionaireform_convert");
 		for ( var i = 0,result = {}; i < questionform.input.length; i++) {
 			result[questionform.input[i]._id] = questionform.input[i];
 		}
-		_lib.log(result,"questionaireform_convert");
+		
 		return result;
 	},
 	convertObjectId:function(p){
@@ -95,7 +97,7 @@ var lib = {
 dataProvider.prototype.getSurveyForm = function(req,callback) {
 	_lib.log(req.query,"log req");
 	//add log
-	var db = this.db, ip,k,ck={},log = {};
+	var /* db = this.db, */ ip,k,ck={},log = {};
 	log.headers = req.headers;
 
 	//replace "." in cookie key into "_"
@@ -113,12 +115,16 @@ dataProvider.prototype.getSurveyForm = function(req,callback) {
 	
 	log.created_at = new Date();
 	db2.log_access_survey.insert(log, function(error,results) {
+			
 		  if(error){
 			  if(error){callback(error,false);}
 		  }
 		  else {
 			  //get questionaireform data to generate on page
 			  db2.questionaireform.findOne({_id:lib.convertObjectId(req.query.pid)},function(error,result){
+				  _lib.log(req.query.pid, "_lib.log");
+				  _lib.log(error,"getSurveyForm - error");
+				  _lib.log(result,"getSurveyForm - result");
 				  if(error){callback(error,false);}
 				  else {
 	    			  callback(null, result); 

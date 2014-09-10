@@ -137,8 +137,8 @@ app.get('/analytics', function(req, res){
 
 //submitsurvey
 app.post('/submitsurvey', function(req, res){
-	//_lib.log(req,"req");
-	//_lib.log(res,"res");
+	_lib.log(req,"req");
+	_lib.log(res,"res");
 	dataProvider.insertSurvey(req.body,req,function(error, result){
 	if(error) {
 		res.redirect('/message?'+((result)?'signupdone':'signupfail'));

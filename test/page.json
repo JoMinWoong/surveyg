@@ -1,0 +1,635 @@
+{
+	"_id" : ObjectId("540ed8443e8dcddd548f762e"),
+			"datatype" : 1,
+				"input" : [
+							{
+											"_id" : "name",
+														"elms" : [
+																			{
+																									"tagName" : "INPUT",
+																														"type" : "text",
+																																			"name" : "inputdata[name]"
+																																								}
+														],
+																		"item" : {
+																							"group" : "1",
+																											"title" : "購入履歴と照合用に使います。購入時の情報を入力ください。"
+																															}
+																},
+						{
+										"_id" : "mail",
+													"elms" : [
+																		{
+																								"tagName" : "INPUT",
+																													"type" : "text",
+																																		"name" : "inputdata[mail]"
+																																							}
+													],
+																	"item" : {
+																						"group" : "1",
+																										"title" : "購入履歴と照合用に使います。購入時の情報を入力ください。"
+																														}
+															},
+								{
+												"_id" : "whoau",
+															"elms" : [
+																				{
+																										"tagName" : "INPUT",
+																															"type" : "radio",
+																																				"name" : "inputdata[whoau]",
+																																									"value" : "a",
+																																														"label" : "小学生"
+																																																			},
+																			{
+																									"tagName" : "INPUT",
+																														"type" : "radio",
+																																			"name" : "inputdata[whoau]",
+																																								"value" : "b",
+																																													"label" : "中学生"
+																																																		},
+																							{
+																													"tagName" : "INPUT",
+																																		"type" : "radio",
+																																							"name" : "inputdata[whoau]",
+																																												"value" : "c",
+																																																	"label" : "高校生"
+																																																						},
+																											{
+																																	"tagName" : "INPUT",
+																																						"type" : "radio",
+																																											"name" : "inputdata[whoau]",
+																																																"value" : "d",
+																																																					"label" : "大学生"
+																																																										},
+																															{
+																																					"tagName" : "INPUT",
+																																										"type" : "radio",
+																																															"name" : "inputdata[whoau]",
+																																																				"value" : "e",
+																																																									"label" : "社会人"
+																																																														},
+																																			{
+																																									"tagName" : "INPUT",
+																																														"type" : "radio",
+																																																			"name" : "inputdata[whoau]",
+																																																								"value" : "f",
+																																																													"label" : "その他"
+																																																																		}
+															],
+																			"item" : {
+																								"title" : "バスケットゴールはどなたがご利用しますか？"
+																												}
+																	},
+										{
+														"_id" : "competitor",
+																	"elms" : [
+																						{
+																												"tagName" : "INPUT",
+																																	"type" : "checkbox",
+																																						"name" : "inputdata[competitor]",
+																																											"value" : "a",
+																																																"label" : "Yahoo!ショッピング"
+																																																					},
+																					{
+																											"tagName" : "INPUT",
+																																"type" : "checkbox",
+																																					"name" : "inputdata[competitor]",
+																																										"value" : "b",
+																																															"label" : "楽天"
+																																																				},
+																									{
+																															"tagName" : "INPUT",
+																																				"type" : "checkbox",
+																																									"name" : "inputdata[competitor]",
+																																														"value" : "c",
+																																																			"label" : "価格コム"
+																																																								},
+																													{
+																																			"tagName" : "INPUT",
+																																								"type" : "checkbox",
+																																													"name" : "inputdata[competitor]",
+																																																		"value" : "d",
+																																																							"label" : "Amazon"
+																																																												},
+																																	{
+																																							"tagName" : "INPUT",
+																																												"type" : "checkbox",
+																																																	"name" : "inputdata[competitor]",
+																																																						"value" : "e",
+																																																											"label" : "比較しなかった"
+																																																																},
+																																					{
+																																											"tagName" : "INPUT",
+																																																"type" : "checkbox",
+																																																					"name" : "inputdata[competitor]",
+																																																										"value" : "f",
+																																																															"label" : "その他"
+																																																																				}
+																	],
+																					"item" : {
+																										"title" : "今回、商品購入に当たり他店と比較しましたか？",
+																														"required" : 1,
+																																		"group" : 2
+																																						}
+																			},
+												{
+																"_id" : "competitor_etc",
+																			"elms" : [
+																								{
+																														"tagName" : "TEXTAREA",
+																																			"type" : "textarea",
+																																								"name" : "inputdata[competitor_etc]"
+																																													}
+																			],
+																							"item" : {
+																												"title" : "",
+																																"group" : 2
+																																				}
+																					},
+														{
+																		"_id" : "brandcomparison",
+																					"elms" : [
+																										{
+																																"tagName" : "INPUT",
+																																					"type" : "checkbox",
+																																										"name" : "inputdata[brandcomparison]",
+																																															"value" : "a",
+																																																				"label" : "ライフタイム"
+																																																									},
+																									{
+																															"tagName" : "INPUT",
+																																				"type" : "checkbox",
+																																									"name" : "inputdata[brandcomparison]",
+																																														"value" : "b",
+																																																			"label" : "カワセ/カイザー"
+																																																								},
+																													{
+																																			"tagName" : "INPUT",
+																																								"type" : "checkbox",
+																																													"name" : "inputdata[brandcomparison]",
+																																																		"value" : "c",
+																																																							"label" : "スポルディング"
+																																																												},
+																																	{
+																																							"tagName" : "INPUT",
+																																												"type" : "checkbox",
+																																																	"name" : "inputdata[brandcomparison]",
+																																																						"value" : "d",
+																																																											"label" : "リーディングエッジ"
+																																																																},
+																																					{
+																																											"tagName" : "INPUT",
+																																																"type" : "checkbox",
+																																																					"name" : "inputdata[brandcomparison]",
+																																																										"value" : "e",
+																																																															"label" : "セノー"
+																																																																				},
+																																									{
+																																															"tagName" : "INPUT",
+																																																				"type" : "checkbox",
+																																																									"name" : "inputdata[brandcomparison]",
+																																																														"value" : "f",
+																																																																			"label" : "比較しなかった"
+																																																																								},
+																																													{
+																																																			"tagName" : "INPUT",
+																																																								"type" : "checkbox",
+																																																													"name" : "inputdata[brandcomparison]",
+																																																																		"value" : "g",
+																																																																							"label" : "その他"
+																																																																												}
+																					],
+																									"item" : {
+																														"title" : "今回、商品購入に当たり他のメーカーと比較しましたか？",
+																																		"required" : 1,
+																																						"group" : 3
+																																										}
+																							},
+																{
+																				"_id" : "brandcomparison_etc",
+																							"elms" : [
+																												{
+																																		"tagName" : "TEXTAREA",
+																																							"type" : "textarea",
+																																												"name" : "inputdata[brandcomparison_etc]"
+																																																	}
+																							],
+																											"item" : {
+																																"title" : "",
+																																				"group" : 3
+																																								}
+																									},
+																		{
+																						"_id" : "aboutsmartphone1",
+																									"elms" : [
+																														{
+																																				"tagName" : "INPUT",
+																																									"type" : "radio",
+																																														"name" : "inputdata[aboutsmartphone1]",
+																																																			"value" : "a",
+																																																								"label" : "はい"
+																																																													},
+																													{
+																																			"tagName" : "INPUT",
+																																								"type" : "radio",
+																																													"name" : "inputdata[aboutsmartphone1]",
+																																																		"value" : "b",
+																																																							"label" : "いいえ"
+																																																												}
+																									],
+																													"item" : {
+																																		"title" : "スマートフォンを持ってる"
+																																						}
+																											},
+																				{
+																								"_id" : "aboutsmartphone2",
+																											"elms" : [
+																																{
+																																						"tagName" : "INPUT",
+																																											"type" : "radio",
+																																																"name" : "inputdata[aboutsmartphone2]",
+																																																					"value" : "a",
+																																																										"label" : "はい"
+																																																															},
+																															{
+																																					"tagName" : "INPUT",
+																																										"type" : "radio",
+																																															"name" : "inputdata[aboutsmartphone2]",
+																																																				"value" : "b",
+																																																									"label" : "いいえ"
+																																																														}
+																											],
+																															"item" : {
+																																				"title" : "スマートフォンで商品の比較検討をした"
+																																								}
+																													},
+																						{
+																										"_id" : "aboutsmartphone3",
+																													"elms" : [
+																																		{
+																																								"tagName" : "INPUT",
+																																													"type" : "radio",
+																																																		"name" : "inputdata[aboutsmartphone3]",
+																																																							"value" : "a",
+																																																												"label" : "はい"
+																																																																	},
+																																	{
+																																							"tagName" : "INPUT",
+																																												"type" : "radio",
+																																																	"name" : "inputdata[aboutsmartphone3]",
+																																																						"value" : "b",
+																																																											"label" : "いいえ"
+																																																																}
+																													],
+																																	"item" : {
+																																						"title" : "スマートフォンで商品を購入した"
+																																										}
+																															},
+																								{
+																												"_id" : "reason1",
+																															"elms" : [
+																																				{
+																																										"tagName" : "INPUT",
+																																															"type" : "radio",
+																																																				"name" : "inputdata[reason1]",
+																																																									"value" : "a",
+																																																														"label" : "極めて重要"
+																																																																			},
+																																			{
+																																									"tagName" : "INPUT",
+																																														"type" : "radio",
+																																																			"name" : "inputdata[reason1]",
+																																																								"value" : "b",
+																																																													"label" : "結構重要"
+																																																																		},
+																																							{
+																																													"tagName" : "INPUT",
+																																																		"type" : "radio",
+																																																							"name" : "inputdata[reason1]",
+																																																												"value" : "b",
+																																																																	"label" : "有り程度重要"
+																																																																						},
+																																											{
+																																																	"tagName" : "INPUT",
+																																																						"type" : "radio",
+																																																											"name" : "inputdata[reason1]",
+																																																																"value" : "b",
+																																																																					"label" : "多少重要"
+																																																																										},
+																																															{
+																																																					"tagName" : "INPUT",
+																																																										"type" : "radio",
+																																																															"name" : "inputdata[reason1]",
+																																																																				"value" : "b",
+																																																																									"label" : "全く重要じゃない"
+																																																																														}
+																															],
+																																			"item" : {
+																																								"title" : "ブランド・メーカー"
+																																												}
+																																	},
+																										{
+																														"_id" : "reason2",
+																																	"elms" : [
+																																						{
+																																												"tagName" : "INPUT",
+																																																	"type" : "radio",
+																																																						"name" : "inputdata[reason2]",
+																																																											"value" : "a",
+																																																																"label" : "極めて重要"
+																																																																					},
+																																					{
+																																											"tagName" : "INPUT",
+																																																"type" : "radio",
+																																																					"name" : "inputdata[reason2]",
+																																																										"value" : "b",
+																																																															"label" : "結構重要"
+																																																																				},
+																																									{
+																																															"tagName" : "INPUT",
+																																																				"type" : "radio",
+																																																									"name" : "inputdata[reason2]",
+																																																														"value" : "b",
+																																																																			"label" : "有り程度重要"
+																																																																								},
+																																													{
+																																																			"tagName" : "INPUT",
+																																																								"type" : "radio",
+																																																													"name" : "inputdata[reason2]",
+																																																																		"value" : "b",
+																																																																							"label" : "多少重要"
+																																																																												},
+																																																	{
+																																																							"tagName" : "INPUT",
+																																																												"type" : "radio",
+																																																																	"name" : "inputdata[reason2]",
+																																																																						"value" : "b",
+																																																																											"label" : "全く重要じゃない"
+																																																																																}
+																																	],
+																																					"item" : {
+																																										"title" : "サイトの使いやすさ"
+																																														}
+																																			},
+																												{
+																																"_id" : "reason3",
+																																			"elms" : [
+																																								{
+																																														"tagName" : "INPUT",
+																																																			"type" : "radio",
+																																																								"name" : "inputdata[reason3]",
+																																																													"value" : "a",
+																																																																		"label" : "極めて重要"
+																																																																							},
+																																							{
+																																													"tagName" : "INPUT",
+																																																		"type" : "radio",
+																																																							"name" : "inputdata[reason3]",
+																																																												"value" : "b",
+																																																																	"label" : "結構重要"
+																																																																						},
+																																											{
+																																																	"tagName" : "INPUT",
+																																																						"type" : "radio",
+																																																											"name" : "inputdata[reason3]",
+																																																																"value" : "b",
+																																																																					"label" : "有り程度重要"
+																																																																										},
+																																															{
+																																																					"tagName" : "INPUT",
+																																																										"type" : "radio",
+																																																															"name" : "inputdata[reason3]",
+																																																																				"value" : "b",
+																																																																									"label" : "多少重要"
+																																																																														},
+																																																			{
+																																																									"tagName" : "INPUT",
+																																																														"type" : "radio",
+																																																																			"name" : "inputdata[reason3]",
+																																																																								"value" : "b",
+																																																																													"label" : "全く重要じゃない"
+																																																																																		}
+																																			],
+																																							"item" : {
+																																												"title" : "値段"
+																																																}
+																																					},
+																														{
+																																		"_id" : "reason4",
+																																					"elms" : [
+																																										{
+																																																"tagName" : "INPUT",
+																																																					"type" : "radio",
+																																																										"name" : "inputdata[reason4]",
+																																																															"value" : "a",
+																																																																				"label" : "極めて重要"
+																																																																									},
+																																									{
+																																															"tagName" : "INPUT",
+																																																				"type" : "radio",
+																																																									"name" : "inputdata[reason4]",
+																																																														"value" : "b",
+																																																																			"label" : "結構重要"
+																																																																								},
+																																													{
+																																																			"tagName" : "INPUT",
+																																																								"type" : "radio",
+																																																													"name" : "inputdata[reason4]",
+																																																																		"value" : "b",
+																																																																							"label" : "有り程度重要"
+																																																																												},
+																																																	{
+																																																							"tagName" : "INPUT",
+																																																												"type" : "radio",
+																																																																	"name" : "inputdata[reason4]",
+																																																																						"value" : "b",
+																																																																											"label" : "多少重要"
+																																																																																},
+																																																					{
+																																																											"tagName" : "INPUT",
+																																																																"type" : "radio",
+																																																																					"name" : "inputdata[reason4]",
+																																																																										"value" : "b",
+																																																																															"label" : "全く重要じゃない"
+																																																																																				}
+																																					],
+																																									"item" : {
+																																														"title" : "信頼度・評判"
+																																																		}
+																																							},
+																																{
+																																				"_id" : "reason5",
+																																							"elms" : [
+																																												{
+																																																		"tagName" : "INPUT",
+																																																							"type" : "radio",
+																																																												"name" : "inputdata[reason5]",
+																																																																	"value" : "a",
+																																																																						"label" : "極めて重要"
+																																																																											},
+																																											{
+																																																	"tagName" : "INPUT",
+																																																						"type" : "radio",
+																																																											"name" : "inputdata[reason5]",
+																																																																"value" : "b",
+																																																																					"label" : "結構重要"
+																																																																										},
+																																															{
+																																																					"tagName" : "INPUT",
+																																																										"type" : "radio",
+																																																															"name" : "inputdata[reason5]",
+																																																																				"value" : "b",
+																																																																									"label" : "有り程度重要"
+																																																																														},
+																																																			{
+																																																									"tagName" : "INPUT",
+																																																														"type" : "radio",
+																																																																			"name" : "inputdata[reason5]",
+																																																																								"value" : "b",
+																																																																													"label" : "多少重要"
+																																																																																		},
+																																																							{
+																																																													"tagName" : "INPUT",
+																																																																		"type" : "radio",
+																																																																							"name" : "inputdata[reason5]",
+																																																																												"value" : "b",
+																																																																																	"label" : "全く重要じゃない"
+																																																																																						}
+																																							],
+																																											"item" : {
+																																																"title" : "商品セレクション"
+																																																				}
+																																									},
+																																		{
+																																						"_id" : "reason6",
+																																									"elms" : [
+																																														{
+																																																				"tagName" : "INPUT",
+																																																									"type" : "radio",
+																																																														"name" : "inputdata[reason6]",
+																																																																			"value" : "a",
+																																																																								"label" : "極めて重要"
+																																																																													},
+																																													{
+																																																			"tagName" : "INPUT",
+																																																								"type" : "radio",
+																																																													"name" : "inputdata[reason6]",
+																																																																		"value" : "b",
+																																																																							"label" : "結構重要"
+																																																																												},
+																																																	{
+																																																							"tagName" : "INPUT",
+																																																												"type" : "radio",
+																																																																	"name" : "inputdata[reason6]",
+																																																																						"value" : "b",
+																																																																											"label" : "有り程度重要"
+																																																																																},
+																																																					{
+																																																											"tagName" : "INPUT",
+																																																																"type" : "radio",
+																																																																					"name" : "inputdata[reason6]",
+																																																																										"value" : "b",
+																																																																															"label" : "多少重要"
+																																																																																				},
+																																																									{
+																																																															"tagName" : "INPUT",
+																																																																				"type" : "radio",
+																																																																									"name" : "inputdata[reason6]",
+																																																																														"value" : "b",
+																																																																																			"label" : "全く重要じゃない"
+																																																																																								}
+																																									],
+																																													"item" : {
+																																																		"title" : "配送"
+																																																						}
+																																											},
+																																				{
+																																								"_id" : "reason7",
+																																											"elms" : [
+																																																{
+																																																						"tagName" : "INPUT",
+																																																											"type" : "radio",
+																																																																"name" : "inputdata[reason7]",
+																																																																					"value" : "a",
+																																																																										"label" : "極めて重要"
+																																																																															},
+																																															{
+																																																					"tagName" : "INPUT",
+																																																										"type" : "radio",
+																																																															"name" : "inputdata[reason7]",
+																																																																				"value" : "b",
+																																																																									"label" : "結構重要"
+																																																																														},
+																																																			{
+																																																									"tagName" : "INPUT",
+																																																														"type" : "radio",
+																																																																			"name" : "inputdata[reason7]",
+																																																																								"value" : "b",
+																																																																													"label" : "有り程度重要"
+																																																																																		},
+																																																							{
+																																																													"tagName" : "INPUT",
+																																																																		"type" : "radio",
+																																																																							"name" : "inputdata[reason7]",
+																																																																												"value" : "b",
+																																																																																	"label" : "多少重要"
+																																																																																						},
+																																																											{
+																																																																	"tagName" : "INPUT",
+																																																																						"type" : "radio",
+																																																																											"name" : "inputdata[reason7]",
+																																																																																"value" : "b",
+																																																																																					"label" : "全く重要じゃない"
+																																																																																										}
+																																											],
+																																															"item" : {
+																																																				"title" : "スマートフォンに対応している"
+																																																								}
+																																													},
+																																						{
+																																										"_id" : "reason8",
+																																													"elms" : [
+																																																		{
+																																																								"tagName" : "INPUT",
+																																																													"type" : "radio",
+																																																																		"name" : "inputdata[reason8]",
+																																																																							"value" : "a",
+																																																																												"label" : "極めて重要"
+																																																																																	},
+																																																	{
+																																																							"tagName" : "INPUT",
+																																																												"type" : "radio",
+																																																																	"name" : "inputdata[reason8]",
+																																																																						"value" : "b",
+																																																																											"label" : "結構重要"
+																																																																																},
+																																																					{
+																																																											"tagName" : "INPUT",
+																																																																"type" : "radio",
+																																																																					"name" : "inputdata[reason8]",
+																																																																										"value" : "b",
+																																																																															"label" : "有り程度重要"
+																																																																																				},
+																																																									{
+																																																															"tagName" : "INPUT",
+																																																																				"type" : "radio",
+																																																																									"name" : "inputdata[reason8]",
+																																																																														"value" : "b",
+																																																																																			"label" : "多少重要"
+																																																																																								},
+																																																													{
+																																																																			"tagName" : "INPUT",
+																																																																								"type" : "radio",
+																																																																													"name" : "inputdata[reason8]",
+																																																																																		"value" : "b",
+																																																																																							"label" : "全く重要じゃない"
+																																																																																												}
+																																													],
+																																																	"item" : {
+																																																						"title" : "タブレットに対応している"
+																																																										}
+																																															}
+			],
+					"form" : '<div class="gs-client-logo"><img src="images/page/logo.png"></div><h1><b>ECサイト</b>の<b>リニュアル</b>についての<b>アンケート</b></h1><h2>アンケートにお答え下さい。<br>今後のショップ改善に役立てさせていただきます。 </h2> <hr> <div class="gs-question"> <h3> <b>1</b><i>購入履歴と照合用に使います。購入時の情報を入力ください。</i> </h3> <ul> <li> <strong>名前<u>（必須）</u></strong> <b class="pie"><input type="text" name="" value=""></b> </li> <li> <strong>メールアドレス<u>（必須）</u></strong> <b class="pie"><input type="text" name="" value=""></b> </li> </ul> </div> <hr> <div class="gs-question gs-clearfix gs-radio"> <h3> <b>2</b><i>バスケットゴールはどなたがご利用しますか？<u>（必須）</u></i> </h3> <ul> <li class=""> <span><em></em><strong>小学生</strong></span> <sub><input type="radio" name="r2" value=""></sub> </li> <li class="checked"> <span><em></em><strong>中学生</strong></span> <sub><input type="radio" name="r2" value=""></sub> </li> <li> <span><em></em><strong>高校生</strong></span> <sub><input type="radio" name="r2" value=""></sub> </li> <li> <span><em></em><strong>大学生</strong></span> <sub><input type="radio" name="r2" value=""></sub> </li> <li> <span><em></em><strong>社会人</strong></span> <sub><input type="radio" name="r2" value=""></sub> </li> <li class="gs-misc-option"> <span><em></em><strong>その他</strong><u style="display: none;">（下記に説明してください）</u></span> <sub><input type="radio" name="r2" value=""></sub> </li> <li class="gs-misc-input" style=""> <b><textarea placeholder="ご説明" name="t2"></textarea></b> </li> </ul> </div> <hr> <div class="gs-question gs-clearfix gs-radio"> <h3> <b>3</b><i>今回、当店をどこで知りましたか？<u>（必須）</u></i> </h3> <ul> <li> <span><em></em><strong>検索エンジン(Google)</strong></span> <sub><input type="radio" name="r3" value=""></sub> </li> <li> <span><em></em><strong>検索エンジン(Yahoo)</strong></span> <sub><input type="radio" name="r3" value=""></sub> </li> <li> <span><em></em><strong>広告</strong></span> <sub><input type="radio" name="r3" value=""></sub> </li> <li> <span><em></em><strong>Twitter/Facebook</strong></span> <sub><input type="radio" name="r3" value=""></sub> </li> <li> <span><em></em><strong>知人の紹介</strong></span> <sub><input type="radio" name="r3" value=""></sub> </li> <li class="gs-misc-option"> <span><em></em><strong>その他</strong><u>（下記に説明してください）</u></span> <sub><input type="radio" name="r3" value=""></sub> </li> <li class="gs-misc-input"> <b><textarea placeholder="ご説明" name="t3"></textarea></b> </li> </ul> </div> <hr> <div class="gs-question gs-clearfix gs-checkbox"> <h3> <b>4</b><i>今回、商品購入に当たり他店と比較しましたか？<u>（必須）</u></i> </h3> <ul> <li class="checked"> <span><em></em><strong>Yahoo!ショッピング</strong></span> <sub><input type="checkbox" name="cb4" value=""></sub> </li> <li> <span><em></em><strong>楽天</strong></span> <sub><input type="checkbox" name="cb4" value=""></sub> </li> <li> <span><em></em><strong>価格コム</strong></span> <sub><input type="checkbox" name="cb4" value=""></sub> </li> <li> <span><em></em><strong>Amazon</strong></span> <sub><input type="checkbox" name="cb4" value=""></sub> </li> <li> <span><em></em><strong>比較しなかった</strong></span> <sub><input type="checkbox" name="cb4" value=""></sub> </li> <li class="gs-misc-option"> <span><em></em><strong>その他</strong><u>（下記に説明してください）</u></span> <sub><input type="checkbox" name="cb4" value=""></sub> </li> <li class="gs-misc-input"> <b><textarea placeholder="ご説明" name="t4"></textarea></b> </li> </ul> </div> <hr> <div class="gs-question gs-clearfix gs-checkbox"> <h3> <b>5</b><i>今回、商品購入に当たり他のメーカーと比較しましたか？<u>（必須）</u></i> </h3> <ul> <li> <span><em></em><strong>ライフタイム</strong></span> <sub><input type="checkbox" name="cb5" value=""></sub> </li> <li> <span><em></em><strong>カワセ/カイザー</strong></span> <sub><input type="checkbox" name="cb5" value=""></sub> </li> <li class="checked"> <span><em></em><strong>スポルディング</strong></span> <sub><input type="checkbox" name="cb5" value=""></sub> </li> <li class="checked"> <span><em></em><strong>リーディングエッジ</strong></span> <sub><input type="checkbox" name="cb5" value=""></sub> </li> <li class="checked"> <span><em></em><strong>セノー</strong></span> <sub><input type="checkbox" name="cb5" value=""></sub> </li> <li class=""> <span><em></em><strong>比較しなかった</strong></span> <sub><input type="checkbox" name="cb5" value=""></sub> </li> <li class="gs-misc-option checked"> <span><em></em><strong>その他</strong><u style="display: inline;">（下記に説明してください）</u></span> <sub><input type="checkbox" name="cb5" value=""></sub> </li> <li class="gs-misc-input" style="display: list-item;"> <b><textarea placeholder="ご説明" name="t5"></textarea></b> </li> </ul> </div> <hr> <div class="gs-question gs-clearfix gs-radio"> <h3> <b>6</b><i>購入検討に当たりスマートフォンを利用しましたか？<u>（必須）</u></i> </h3> <div class="gs-group" style="width: 453px;"> <ul class="pie"> <li class="gs-header"> スマートフォンを持っている </li> <li> <span><em></em><strong>はい</strong></span> <sub><input type="radio" name="r61" value=""></sub> </li> <li class="bg"> <span><em></em><strong>いいえ</strong></span> <sub><input type="radio" name="r61" value=""></sub> </li> </ul> </div> <div class="gs-group" style="width: 453px;"> <ul class="pie"> <li class="gs-header"> スマートフォンで商品の比較検討をした </li> <li> <span><em></em><strong>はい</strong></span> <sub><input type="radio" name="r62" value=""></sub> </li> <li class="bg"> <span><em></em><strong>いいえ</strong></span> <sub><input type="radio" name="r62" value=""></sub> </li> </ul> </div> <div class="gs-group" style="width: 453px;"> <ul class="pie"> <li class="gs-header"> スマートフォンで商品を購入した </li> <li> <span><em></em><strong>はい</strong></span> <sub><input type="radio" name="r63" value=""></sub> </li> <li class="bg"> <span><em></em><strong>いいえ</strong></span> <sub><input type="radio" name="r63" value=""></sub> </li> </ul> </div> </div> <hr> <div class="gs-question gs-clearfix gs-radio"> <h3> <b>7</b><i>今回購入にあたり何を重視しましたか？<u>（必須）</u></i> </h3> <div class="gs-group" style="width: 453px;"> <ul class="pie"> <li class="gs-header"> ブランド・メーカー </li> <li class="checked"> <span><em></em><strong>極めて重要</strong></span> <sub><input type="radio" name="r71" value=""></sub> </li> <li class="bg"> <span><em></em><strong>結構重要</strong></span> <sub><input type="radio" name="r71" value=""></sub> </li> <li> <span><em></em><strong>ある程度重要</strong></span> <sub><input type="radio" name="r71" value=""></sub> </li> <li class="bg"> <span><em></em><strong>多少重要</strong></span> <sub><input type="radio" name="r71" value=""></sub> </li> <li> <span><em></em><strong>全く重要ではない</strong></span> <sub><input type="radio" name="r71" value=""></sub> </li> </ul> </div> <div class="gs-group" style="width: 453px;"> <ul class="pie"> <li class="gs-header"> サイトの使いやすさ </li> <li> <span><em></em><strong>極めて重要</strong></span> <sub><input type="radio" name="r72" value=""></sub> </li> <li class="bg"> <span><em></em><strong>結構重要</strong></span> <sub><input type="radio" name="r72" value=""></sub> </li> <li> <span><em></em><strong>ある程度重要</strong></span> <sub><input type="radio" name="r72" value=""></sub> </li> <li class="bg"> <span><em></em><strong>多少重要</strong></span> <sub><input type="radio" name="r72" value=""></sub> </li> <li> <span><em></em><strong>全く重要ではない</strong></span> <sub><input type="radio" name="r72" value=""></sub> </li> </ul> </div> <div class="gs-group" style="width: 453px;"> <ul class="pie"> <li class="gs-header"> 値段 </li> <li> <span><em></em><strong>極めて重要</strong></span> <sub><input type="radio" name="r73" value=""></sub> </li> <li class="bg"> <span><em></em><strong>結構重要</strong></span> <sub><input type="radio" name="r73" value=""></sub> </li> <li> <span><em></em><strong>ある程度重要</strong></span> <sub><input type="radio" name="r73" value=""></sub> </li> <li class="bg"> <span><em></em><strong>多少重要</strong></span> <sub><input type="radio" name="r73" value=""></sub> </li> <li> <span><em></em><strong>全く重要ではない</strong></span> <sub><input type="radio" name="r73" value=""></sub> </li> </ul> </div> <div class="gs-group" style="width: 453px;"> <ul class="pie"> <li class="gs-header"> 信頼度・評判 </li> <li> <span><em></em><strong>極めて重要</strong></span> <sub><input type="radio" name="r74" value=""></sub> </li> <li class="bg"> <span><em></em><strong>結構重要</strong></span> <sub><input type="radio" name="r74" value=""></sub> </li> <li> <span><em></em><strong>ある程度重要</strong></span> <sub><input type="radio" name="r74" value=""></sub> </li> <li class="bg"> <span><em></em><strong>多少重要</strong></span> <sub><input type="radio" name="r74" value=""></sub> </li> <li> <span><em></em><strong>全く重要ではない</strong></span> <sub><input type="radio" name="r74" value=""></sub> </li> </ul> </div> <div class="gs-group" style="width: 453px;"> <ul class="pie"> <li class="gs-header"> 商品セレクション </li> <li> <span><em></em><strong>極めて重要</strong></span> <sub><input type="radio" name="r75" value=""></sub> </li> <li class="bg"> <span><em></em><strong>結構重要</strong></span> <sub><input type="radio" name="r75" value=""></sub> </li> <li> <span><em></em><strong>ある程度重要</strong></span> <sub><input type="radio" name="r75" value=""></sub> </li> <li class="bg"> <span><em></em><strong>多少重要</strong></span> <sub><input type="radio" name="r75" value=""></sub> </li> <li> <span><em></em><strong>全く重要ではない</strong></span> <sub><input type="radio" name="r75" value=""></sub> </li> </ul> </div> <div class="gs-group" style="width: 453px;"> <ul class="pie"> <li class="gs-header"> 配送 </li> <li> <span><em></em><strong>極めて重要</strong></span> <sub><input type="radio" name="r76" value=""></sub> </li> <li class="bg"> <span><em></em><strong>結構重要</strong></span> <sub><input type="radio" name="r76" value=""></sub> </li> <li> <span><em></em><strong>ある程度重要</strong></span> <sub><input type="radio" name="r76" value=""></sub> </li> <li class="bg"> <span><em></em><strong>多少重要</strong></span> <sub><input type="radio" name="r76" value=""></sub> </li> <li> <span><em></em><strong>全く重要ではない</strong></span> <sub><input type="radio" name="r76" value=""></sub> </li> </ul> </div> <div class="gs-group" style="width: 453px;"> <ul class="pie"> <li class="gs-header"> スマートフォンに対応している </li> <li> <span><em></em><strong>極めて重要</strong></span> <sub><input type="radio" name="r77" value=""></sub> </li> <li class="bg"> <span><em></em><strong>結構重要</strong></span> <sub><input type="radio" name="r77" value=""></sub> </li> <li> <span><em></em><strong>ある程度重要</strong></span> <sub><input type="radio" name="r77" value=""></sub> </li> <li class="bg"> <span><em></em><strong>多少重要</strong></span> <sub><input type="radio" name="r77" value=""></sub> </li> <li> <span><em></em><strong>全く重要ではない</strong></span> <sub><input type="radio" name="r77" value=""></sub> </li> </ul> </div> <div class="gs-group" style="width: 453px;"> <ul class="pie"> <li class="gs-header"> タブレットに対応している </li> <li> <span><em></em><strong>極めて重要</strong></span> <sub><input type="radio" name="r78" value=""></sub> </li> <li class="bg"> <span><em></em><strong>結構重要</strong></span> <sub><input type="radio" name="r78" value=""></sub> </li> <li> <span><em></em><strong>ある程度重要</strong></span> <sub><input type="radio" name="r78" value=""></sub> </li> <li class="bg"> <span><em></em><strong>多少重要</strong></span> <sub><input type="radio" name="r78" value=""></sub> </li> <li> <span><em></em><strong>全く重要ではない</strong></span> <sub><input type="radio" name="r78" value=""></sub> </li> </ul> </div> </div> <hr> <div class="gs-submit pie"> <b>答えを返信する</b> </div> <br><br><br> ',
+						"formtype" : "basic"
+}

@@ -1,0 +1,463 @@
+/* COMPASS --------------------------------------------------------------- */
+/* VARS ----------------------------------------------------------------- */
+/* PATHS ----------------------------------------------------------------- */
+/* COLORS BASE ----------------------------------------------------------- */
+/* COLORS CUSTOM --------------------------------------------------------- */
+/* FONTS ----------------------------------------------------------------- */
+/* RESET ---------------------------------------------------------------- */
+/* line 23, ../scss/style.scss */
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, i, img, ins, kbd, q, s, samp,
+small, strike, sub, sup, tt, var,
+u, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
+}
+
+/* line 32, ../scss/style.scss */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+  display: block;
+}
+
+/* line 35, ../scss/style.scss */
+body {
+  line-height: 1;
+}
+
+/* line 38, ../scss/style.scss */
+ol, ul {
+  list-style: none;
+}
+
+/* line 41, ../scss/style.scss */
+blockquote, q {
+  quotes: none;
+}
+
+/* line 45, ../scss/style.scss */
+blockquote:before, blockquote:after,
+q:before, q:after {
+  content: '';
+  content: none;
+}
+
+/* line 49, ../scss/style.scss */
+table {
+  border-collapse: collapse;
+  border-spacing: 0;
+}
+
+/* line 53, ../scss/style.scss */
+sub {
+  display: none;
+}
+
+/**************************************************************************/
+/* FORT ----------------------------------------------------------------- */
+/* line 59, ../scss/style.scss */
+.top {
+  /*background: #009dff;*/
+  background: linear-gradient(to right, #098f41 0%, #098f41 100%);
+  position: fixed;
+  z-index: 1031;
+  top: 0;
+  left: 0;
+  height: 4px;
+  transition: all 1s;
+  width: 0;
+  overflow: hidden;
+}
+
+/* line 71, ../scss/style.scss */
+.colors {
+  width: 100%;
+  height: 4px;
+}
+
+/**************************************************************************/
+/* COMMON --------------------------------------------------------------- */
+/* line 80, ../scss/style.scss */
+body {
+  margin: 22px 44px 44px 44px;
+  font-family: "Meiryo UI", "ヒラギノ角ゴ Pro W3", "Hiragino Kaku Gothic Pro", "メイリオ", Verdana, "ＭＳ Ｐゴシック", sans-serif;
+}
+
+/* line 84, ../scss/style.scss */
+.gs-client-logo img {
+  max-width: 300px;
+}
+
+/* line 87, ../scss/style.scss */
+h1 {
+  color: #004d9a;
+  font-size: 40px;
+  line-height: 47px;
+  margin: 22px 0px 0px 0px;
+}
+
+/* line 93, ../scss/style.scss */
+h2 {
+  color: #098f41;
+  font-weight: bold;
+  font-size: 18px;
+  line-height: 24px;
+  margin: 22px 0px 0px 0px;
+}
+
+/* line 100, ../scss/style.scss */
+h3 {
+  position: relative;
+  color: #004d9a;
+  font-size: 22px;
+  line-height: 26px;
+  font-weight: bold;
+}
+
+/* line 107, ../scss/style.scss */
+h3 b {
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  color: white;
+  background-color: #098f41;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  padding: 4px 6px 4px 6px;
+}
+
+/* line 116, ../scss/style.scss */
+h3 i {
+  display: block;
+  margin-left: 44px;
+  margin-bottom: 22px;
+}
+
+/* line 121, ../scss/style.scss */
+hr {
+  margin: 44px 0px 44px 0px;
+  opacity: 0.3;
+  height: 4px;
+  background-color: #f4f4f4;
+  clear: both;
+}
+
+/* line 128, ../scss/style.scss */
+.gs-clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
+}
+
+/* line 133, ../scss/style.scss */
+.gs-question li {
+  position: relative;
+  margin: 22px 0px 0px 66px;
+}
+
+/* line 137, ../scss/style.scss */
+.gs-question li strong {
+  display: block;
+  padding: 0px 0px 16px 0px;
+  color: #484848;
+  font-size: 20px;
+  font-weight: normal;
+  white-space: nowrap;
+}
+
+/* line 145, ../scss/style.scss */
+.gs-question li strong u, .gs-question h3 u, .gs-misc-option u {
+  text-decoration: none;
+  color: red;
+  font-size: 14px;
+  font-weight: bold;
+}
+
+/* line 151, ../scss/style.scss */
+.gs-question li.gs-header {
+  color: #098f41;
+  font-size: 20px;
+  line-height: 24px;
+  font-weight: bold;
+  text-align: left;
+  margin: 11px 0px 11px 6px;
+}
+
+/**************************************************************************/
+/* INPUT : TEXT --------------------------------------------------------- */
+/* line 163, ../scss/style.scss */
+.gs-question li b {
+  border: 2px solid #888888;
+  -webkit-border-radius: 4px;
+  -moz-border-radius: 4px;
+  -ms-border-radius: 4px;
+  -o-border-radius: 4px;
+  border-radius: 4px;
+  padding: 8px 4px 8px 4px;
+}
+
+/* line 168, ../scss/style.scss */
+.gs-question li input[type=text] {
+  border: 0px solid;
+  outline: none;
+  max-width: 444px;
+  width: 90%;
+  height: 26px;
+  font-size: 18px;
+  color: #484848;
+}
+
+/**************************************************************************/
+/* INPUT : RADIO + CHECKBOX --------------------------------------------- */
+/* line 182, ../scss/style.scss */
+.gs-question.gs-radio li,
+.gs-question.gs-checkbox li {
+  padding: 8px 0px 8px 0px;
+}
+
+/* line 186, ../scss/style.scss */
+.gs-question.gs-radio li span,
+.gs-question.gs-checkbox li span {
+  display: inline-block;
+  border: 0px solid;
+  cursor: pointer;
+  padding: 0px 0px 0px 0px;
+}
+
+/* line 192, ../scss/style.scss */
+.gs-question.gs-radio strong {
+  display: inline;
+  margin: 0px 0px 0px 50px;
+}
+
+/* line 196, ../scss/style.scss */
+.gs-question.gs-radio li em {
+  display: inline-block;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 38px;
+  height: 38px;
+  background: url(../img/ui/bg-radio.png) no-repeat left top;
+}
+
+/* line 205, ../scss/style.scss */
+.gs-question li.checked strong {
+  font-weight: bold;
+}
+
+/* line 208, ../scss/style.scss */
+.gs-question.gs-radio li.checked em {
+  background: url(../img/ui/bg-radio.png) no-repeat right top;
+}
+
+/* line 211, ../scss/style.scss */
+.gs-question.gs-checkbox strong {
+  display: inline;
+  margin: 0px 0px 0px 50px;
+}
+
+/* line 215, ../scss/style.scss */
+.gs-question.gs-checkbox li em {
+  display: inline-block;
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 43px;
+  height: 39px;
+  background: url(../img/ui/bg-checkbox.png) no-repeat left top;
+}
+
+/* line 224, ../scss/style.scss */
+.gs-question.gs-checkbox li.checked em {
+  background: url(../img/ui/bg-checkbox.png) no-repeat right top;
+}
+
+/* line 227, ../scss/style.scss */
+.gs-misc-option u {
+  display: none;
+}
+
+/* line 230, ../scss/style.scss */
+.gs-misc-input {
+  display: none;
+}
+
+/* line 233, ../scss/style.scss */
+.gs-misc-input b {
+  display: block;
+  padding: 0px 0px 0px 0px;
+  overflow: auto;
+  height: 100%;
+}
+
+/* line 239, ../scss/style.scss */
+.gs-misc-input textarea {
+  width: 98%;
+  height: 100px;
+  border: 0px solid;
+  outline: none;
+  resize: vertical;
+  font-size: 18px;
+  color: #484848;
+  font-weight: bold;
+}
+
+/**************************************************************************/
+/* GROUPS --------------------------------------------------------------- */
+/* line 253, ../scss/style.scss */
+.gs-group {
+  float: left;
+  margin: 0px 0px 0px 0px;
+}
+
+/* line 257, ../scss/style.scss */
+.gs-group ul {
+  border: 1px dotted #888888;
+  padding: 0px 22px 0px 11px;
+  margin: 22px 0px 22px 44px;
+  -webkit-border-radius: 11px;
+  -moz-border-radius: 11px;
+  -ms-border-radius: 11px;
+  -o-border-radius: 11px;
+  border-radius: 11px;
+}
+
+/* line 263, ../scss/style.scss */
+.gs-group ul li {
+  margin: 0px 0px 22px 0px;
+  padding: 14px 4px 11px 4px !important;
+  -webkit-border-radius: 6px;
+  -moz-border-radius: 6px;
+  -ms-border-radius: 6px;
+  -o-border-radius: 6px;
+  border-radius: 6px;
+}
+
+/* line 268, ../scss/style.scss */
+.gs-group ul li.bg {
+  background-color: #dddddd;
+}
+
+/* line 271, ../scss/style.scss */
+.gs-group ul li em {
+  top: 3px !important;
+  left: 3px !important;
+}
+
+/**************************************************************************/
+/* SUBMIT --------------------------------------------------------------- */
+/* line 279, ../scss/style.scss */
+.gs-submit {
+  display: block;
+  background-color: #098f41;
+  text-align: center;
+  text-decoration: none;
+  padding: 16px 22px 16px 22px;
+  -webkit-border-radius: 11px;
+  -moz-border-radius: 11px;
+  -ms-border-radius: 11px;
+  -o-border-radius: 11px;
+  border-radius: 11px;
+  border: 4px solid white;
+  -webkit-box-shadow: #484848 0px 4px 0px;
+  -moz-box-shadow: #484848 0px 4px 0px;
+  box-shadow: #484848 0px 4px 0px;
+  cursor: pointer;
+}
+
+/* line 290, ../scss/style.scss */
+.gs-submit b {
+  font-size: 36px;
+  color: white;
+}
+
+/**************************************************************************/
+/* THANKS --------------------------------------------------------------- */
+/* line 303, ../scss/style.scss */
+body.page-thanks .gs-thanks img {
+  width: 200px;
+  margin: 33px 0px 0px 88px;
+}
+
+/* line 308, ../scss/style.scss */
+body.page-thanks .gs-content {
+  max-width: 300px;
+  margin: 0px auto 0px auto;
+}
+
+/* line 316, ../scss/style.scss */
+body.page-thanks h1 {
+  font-size: 30px;
+  line-height: 47px;
+}
+
+/* line 321, ../scss/style.scss */
+body.page-thanks h2 {
+  font-size: 18px;
+  line-height: 26px;
+  font-weight: normal;
+  color: #484848;
+}
+
+/* line 327, ../scss/style.scss */
+body.page-thanks .gs-submit {
+  max-width: 240px;
+}
+
+/* line 330, ../scss/style.scss */
+body.page-thanks .gs-submit b {
+  font-size: 22px;
+}
+
+/**************************************************************************/
+/* CHARTS --------------------------------------------------------------- */
+/* line 336, ../scss/style.scss */
+body.page-report {
+  margin: 11px 11px 11px 11px;
+}
+
+/* line 339, ../scss/style.scss */
+.page-report .gs-content {
+  max-width: 1024px;
+  margin: 0px auto 0px auto;
+}
+
+/* line 343, ../scss/style.scss */
+.page-report h3 {
+  padding: 4px 0px 0px 0px;
+  color: #484848;
+}
+
+/* line 347, ../scss/style.scss */
+.page-report h3 b {
+  color: white;
+  background-color: #484848;
+}
+
+/* line 351, ../scss/style.scss */
+.gs-chart {
+  width: 100%;
+}
+
+/* line 354, ../scss/style.scss */
+.gs-map {
+  width: 100%;
+  height: 400px;
+}
